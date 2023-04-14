@@ -34,7 +34,7 @@ function getCoalescedEvents(event: PointerEvent): PointerEvent[] {
 /**
  * InputProvider implementation that hooks into a DOM element's pointer events.
  */
-export class PointerInputProvider extends InputProvider {
+export class NonClickablePointerInputProvider extends InputProvider {
     private _activePointerId?: number;
 
     // private capturePointer(pointerId: number) {
