@@ -1,16 +1,18 @@
 import { useLiveCanvas } from "@microsoft/live-share-react";
 import { InkingTool } from "@microsoft/live-share-canvas";
-import { FC, useRef, useEffect, useState } from "react";
+import { FC, useRef, useEffect, useState, MutableRefObject } from "react";
 import { Button } from "@fluentui/react-components";
+import { PointerInputProvider } from "../../../utils";
 
 interface ILiveCanvasOverlayProps {
     width: number;
+    hostRef: MutableRefObject<HTMLElement | null>;
 }
 
-export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({width}) => {
+export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({width, hostRef}) => {
     const canvasRef = useRef<HTMLDivElement>(null);
-    const [cursorsActive, setCursorsActive] = useState(false);
-    const {} = useLiveCanvas(
+    const [cursorsActive, setCursorsActive] = useState(true);
+    const { inkingManager } = useLiveCanvas(
         "live-canvas",
         canvasRef,
         cursorsActive,
@@ -26,6 +28,15 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({width}) => {
             e.preventDefault();
         };
     }, []);
+    useEffect(() => {
+        const hostElement = hostRef?.current;
+        if (!inkingManager || !hostElement) return;
+        const inputProvider = new PointerInputProvider(hostElement);
+        inkingManager.inputProvider = inputProvider;
+        return () => {
+            inputProvider.deactivate();
+        }
+    }, [inkingManager, hostRef]);
     const widthRemainder = window.document.body.clientWidth - width;
     const hOffset = widthRemainder / 2;
     return (
@@ -40,7 +51,7 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({width}) => {
                     top: 0,
                     width: `${width}px`,
                     zIndex: 1,
-                    pointerEvents: cursorsActive ? "auto" : "none",
+                    pointerEvents: "none",
                     backgroundColor: "transparent",
                 }}
             />

@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { FlexColumn } from "../flex";
 import { Spinner, tokens } from "@fluentui/react-components";
 import {
@@ -17,6 +17,7 @@ interface ILiveBrowserProps {
 }
 
 export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
+    const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate();
     const { allUsers, updatePresence } = useLivePresence<{ width: number }>(
@@ -57,8 +58,9 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
                 width: `${width}px`,
                 backgroundColor: tokens.colorNeutralBackground1,
             }}
+            ref={browserContainerRef}
         >
-            <LiveCanvasOverlay width={width ?? 0} />
+            <LiveCanvasOverlay width={width ?? 0} hostRef={browserContainerRef} />
             <NavigationBar routePrefix={routePrefix} navigate={navigate} />
             <Outlet />
         </FlexColumn>
