@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { FlexRow } from "../flex";
-import { Button } from "@fluentui/react-components";
+import { Button, tokens } from "@fluentui/react-components";
 
 interface INavigationBarProps {
     routePrefix: string;
@@ -9,7 +9,11 @@ interface INavigationBarProps {
 
 export const NavigationBar: FC<INavigationBarProps> = ({ routePrefix, navigate }) => {
     return (
-        <FlexRow vAlign="center">
+        <FlexRow vAlign="center" style={{
+            padding: "8px",
+            backgroundColor: tokens.colorNeutralBackground4,
+            boxShadow: "2px 4px 48px 0px rgba(0, 0, 0, 0.4)",
+        }}>
             <Button appearance="subtle" onClick={() => {
                 navigate(routePrefix + "/");
             }}>
