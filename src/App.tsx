@@ -14,6 +14,9 @@ import {
     TeamsSidePanelPage,
     BrowseHomePage,
     BrowseAboutPage,
+    ACSPage,
+    ACSJoinMeetingPage,
+    ACSMeetingPage,
 } from "./pages";
 
 function App() {
@@ -50,6 +53,31 @@ function App() {
                             <Route
                                 path={
                                     AppRoutes.teams.children.meeting.children
+                                        .about
+                                }
+                                element={<BrowseAboutPage />}
+                            />
+                        </Route>
+                    </Route>
+                    <Route path={AppRoutes.acs.base} element={<ACSPage />}>
+                        <Route
+                            path={AppRoutes.acs.children.meetingJoin}
+                            element={<ACSJoinMeetingPage />}
+                        />
+                        <Route
+                            path={AppRoutes.acs.children.meeting.base}
+                            element={<ACSMeetingPage />}
+                        >
+                            <Route
+                                path={
+                                    AppRoutes.acs.children.meeting.children
+                                        .home
+                                }
+                                element={<BrowseHomePage />}
+                            />
+                            <Route
+                                path={
+                                    AppRoutes.acs.children.meeting.children
                                         .about
                                 }
                                 element={<BrowseAboutPage />}

@@ -31,7 +31,6 @@ export const LiveScrollView: FC<ILiveScrollViewProps> = ({
         const onScrollEvent = debounce((event: Event) => {
             const scrollTop = (event.target as any)?.scrollTop;
             if (typeof scrollTop !== "number") return;
-            console.log(scrollTop);
             setState("scroll", { scrollTop: scrollTop });
         }, 50);
         scrollViewRef.current?.addEventListener("scroll", onScrollEvent);
