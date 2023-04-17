@@ -20,22 +20,30 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate();
-    const { allUsers, updatePresence } = useLivePresence<{ width: number }>(
-        undefined,
-        {
-            width: window.document.body.clientWidth,
-        }
-    );
+    const { allUsers, updatePresence } = useLivePresence<{
+        width: number;
+        height: number;
+    }>(undefined, {
+        width: window.document.body.clientWidth,
+        height: window.document.body.clientHeight,
+    });
 
-    const sortedUsers = allUsers.sort(
+    const sortedWidthUsers = allUsers.sort(
         (a, b) => (a.data?.width || 0) - (b.data?.width || 0)
     );
-    const width = sortedUsers.length > 0 ? sortedUsers[0].data?.width : 0;
+    const width =
+        sortedWidthUsers.length > 0 ? sortedWidthUsers[0].data?.width : 0;
+    const sortedHeightUsers = allUsers.sort(
+        (a, b) => (a.data?.height || 0) - (b.data?.height || 0)
+    );
+    const height =
+        sortedHeightUsers.length > 0 ? sortedHeightUsers[0].data?.height : 0;
 
     useEffect(() => {
         const onResize = debounce((_: Event) => {
             updatePresence(PresenceState.online, {
                 width: window.document.body.clientWidth,
+                height: window.document.body.clientHeight,
             });
         }, 50);
         window.addEventListener("resize", onResize, true);
@@ -53,14 +61,18 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
     }
     return (
         <FlexColumn
-            fill="view-height"
             style={{
                 width: `${width}px`,
+                height: `${height}px`,
                 backgroundColor: tokens.colorNeutralBackground1,
             }}
             ref={browserContainerRef}
         >
-            <LiveCanvasOverlay width={width ?? 0} hostRef={browserContainerRef} />
+            <LiveCanvasOverlay
+                width={width ?? 0}
+                height={height ?? 0}
+                hostRef={browserContainerRef}
+            />
             <NavigationBar routePrefix={routePrefix} navigate={navigate} />
             <Outlet />
         </FlexColumn>

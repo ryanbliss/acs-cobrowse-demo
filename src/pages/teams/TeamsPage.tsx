@@ -37,7 +37,11 @@ export const TeamsPage: FC = () => {
         return <></>;
     }
     return (
-        <FlexColumn fill="view" hAlign="center" style={{ backgroundColor: tokens.colorNeutralBackgroundInverted }}>
+        <FlexColumn
+            fill="view"
+            hAlign="center"
+            style={{ backgroundColor: tokens.colorNeutralBackgroundInverted }}
+        >
             <Outlet />
         </FlexColumn>
     );

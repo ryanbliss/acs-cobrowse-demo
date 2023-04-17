@@ -7,11 +7,13 @@ import { FlexRow } from "../../flex";
 
 interface ILiveCanvasOverlayProps {
     width: number;
+    height: number;
     hostRef: MutableRefObject<HTMLElement | null>;
 }
 
 export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
     width,
+    height,
     hostRef,
 }) => {
     const canvasRef = useRef<HTMLDivElement>(null);
@@ -49,6 +51,9 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
 
     const widthRemainder = window.document.body.clientWidth - width;
     const hOffset = widthRemainder / 2;
+
+    const heightRemainder = window.document.body.clientHeight - height;
+    const vOffset = heightRemainder / 2;
     return (
         <>
             <div
@@ -57,9 +62,8 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
                     position: "absolute",
                     left: `${hOffset}px`,
                     right: `${hOffset}px`,
-                    bottom: 0,
+                    height: `${height}px`,
                     top: 0,
-                    width: `${width}px`,
                     zIndex: 1,
                     pointerEvents: penActive ? "auto" : "none",
                     backgroundColor: "transparent",

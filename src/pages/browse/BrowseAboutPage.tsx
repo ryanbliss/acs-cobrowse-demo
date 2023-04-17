@@ -38,7 +38,7 @@ export const BrowseAboutPage: FC = () => {
             >
                 <HeroBanner
                     title={"About"}
-                    subtitle={"This SDK combo is amazing"}
+                    subtitle={"Lorem ipsum"}
                 />
                 <LiveAccordion uniqueKey="about-accordion"
                     items={ACCORDION_ITEMS}

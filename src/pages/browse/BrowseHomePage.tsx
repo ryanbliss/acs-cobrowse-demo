@@ -13,8 +13,8 @@ export const BrowseHomePage: FC = () => {
         <FlexRow fill="both" hAlign="center">
             <LiveScrollView
                 uniqueKey="test-home-2"
-                fill="both"
                 style={{
+                    width: "100%",
                     paddingTop: "12px",
                     paddingLeft: "24px",
                     paddingRight: "24px",
@@ -23,7 +23,7 @@ export const BrowseHomePage: FC = () => {
             >
                 <HeroBanner
                     title={"Welcome to the Live Share + ACS CoBrowse demo!"}
-                    subtitle={"Where dreams come true"}
+                    subtitle={"Lorem ipsum"}
                 />
                 <Body1
                     style={{
