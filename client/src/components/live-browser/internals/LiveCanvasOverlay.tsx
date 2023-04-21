@@ -6,19 +6,21 @@ import { NonClickablePointerInputProvider } from "../../../utils";
 import { FlexRow } from "../../flex";
 
 interface ILiveCanvasOverlayProps {
+    displayName: string;
     width: number;
     height: number;
     hostRef: MutableRefObject<HTMLElement | null>;
 }
 
 export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
+    displayName,
     width,
     height,
     hostRef,
 }) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [penActive, setPenActive] = useSharedState("pen-active", false);
-    const { inkingManager } = useLiveCanvas(
+    const { inkingManager, liveCanvas } = useLiveCanvas(
         "live-canvas",
         canvasRef,
         true,
@@ -27,7 +29,10 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
         undefined,
         undefined,
         "topLeft",
-        true
+        true,
+        {
+            displayName,
+        },
     );
     useEffect(() => {
         canvasRef.current!.onclick = (e) => {
@@ -59,6 +64,14 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({
             inputProvider.deactivate();
         };
     }, [inkingManager, hostRef, penActive, hOffset, vOffset]);
+
+    useEffect(() => {
+        // TODO: this should be handled inside of the `useLiveCanvas` hook, but there is a bug...so this handles that.
+        if (!liveCanvas) return;
+        liveCanvas.onGetLocalUserInfo = () => ({
+            displayName,
+        });
+    }, [displayName, liveCanvas]);
 
     return (
         <>

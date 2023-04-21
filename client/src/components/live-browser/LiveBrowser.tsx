@@ -13,10 +13,11 @@ import { LiveCanvasOverlay } from "./internals";
 import debounce from "lodash.debounce";
 
 interface ILiveBrowserProps {
+    displayName: string;
     routePrefix: string;
 }
 
-export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
+export const LiveBrowser: FC<ILiveBrowserProps> = ({ displayName, routePrefix }) => {
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate();
@@ -28,12 +29,13 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
         height: window.document.body.clientHeight,
     });
 
-    const sortedWidthUsers = allUsers.sort(
+    const onlineUsers = allUsers.filter((user) => user.state === PresenceState.online);
+    const sortedWidthUsers = [...onlineUsers].sort(
         (a, b) => (a.data?.width || 0) - (b.data?.width || 0)
     );
     const width =
         sortedWidthUsers.length > 0 ? sortedWidthUsers[0].data?.width : 0;
-    const sortedHeightUsers = allUsers.sort(
+    const sortedHeightUsers = [...onlineUsers].sort(
         (a, b) => (a.data?.height || 0) - (b.data?.height || 0)
     );
     const height =
@@ -69,6 +71,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix }) => {
             ref={browserContainerRef}
         >
             <LiveCanvasOverlay
+                displayName={displayName}
                 width={width ?? 0}
                 height={height ?? 0}
                 hostRef={browserContainerRef}

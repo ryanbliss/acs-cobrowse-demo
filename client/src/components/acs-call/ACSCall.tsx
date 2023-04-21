@@ -22,9 +22,10 @@ const ACS_OPTIONS: CallCompositeOptions = {
 
 export interface IACSCallProps {
     adapter: CallAdapter;
+    formFactor?: 'desktop' | 'mobile';
 }
 
-export const ACSCall: FC<IACSCallProps> = memo(({adapter}) => {
+export const ACSCall: FC<IACSCallProps> = memo(({adapter, formFactor='desktop'}) => {
 
     const callInvitationUrl: string | undefined = window.location.href;
 
@@ -32,7 +33,7 @@ export const ACSCall: FC<IACSCallProps> = memo(({adapter}) => {
         <CallComposite
             adapter={adapter}
             callInvitationUrl={callInvitationUrl}
-              formFactor={'mobile'}
+            formFactor={formFactor}
             options={ACS_OPTIONS}
         />
     );

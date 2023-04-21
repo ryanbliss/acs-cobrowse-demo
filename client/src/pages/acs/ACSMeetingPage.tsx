@@ -1,5 +1,13 @@
-import { FC, useCallback, useRef, useMemo, useEffect, memo } from "react";
-import { useLocation } from "react-router-dom";
+import {
+    FC,
+    useCallback,
+    useRef,
+    useMemo,
+    useEffect,
+    memo,
+    useState,
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ILiveShareHost, TestLiveShareHost } from "@microsoft/live-share";
 import { FlexColumn, LiveShareWrapper } from "../../components";
 import { LiveBrowser } from "../../components/live-browser";
@@ -13,20 +21,48 @@ import {
 } from "@azure/communication-react";
 import { Spinner } from "@fluentui/react-components";
 import { ACSCall } from "../../components/acs-call/ACSCall";
+import { CallState } from "@azure/communication-calling";
 
 const USE_ACS_HOST = false;
 
-let host: ILiveShareHost | undefined;
-
 export const ACSMeetingPage: FC = memo(() => {
     const { state } = useLocation();
+    const [host, setHost] = useState<ILiveShareHost>();
+    const [callState, setCallState] = useState<CallState>("None");
     const initialStateRef = useRef(state);
     const callIdRef = useRef<string>();
+    
+    const user =
+        typeof initialStateRef.current?.user === "object"
+            ? initialStateRef.current.user
+            : undefined;
+    const token =
+        typeof initialStateRef.current?.token === "string"
+            ? initialStateRef.current.token
+            : undefined;
+    const displayName =
+        typeof initialStateRef.current?.displayName === "string"
+            ? initialStateRef.current.displayName
+            : undefined;
+    const meetingJoinUrl =
+        typeof initialStateRef.current?.callLocator?.meetingLink === "string"
+            ? initialStateRef.current.callLocator.meetingLink
+            : "";
+    const credential = useMemo(() => {
+        if (!user?.communicationUserId) return undefined;
+        return createAutoRefreshingCredential(
+            toFlatCommunicationIdentifier(user),
+            token
+        );
+    }, [token, user?.communicationUserId]);
 
+    const navigate = useNavigate();
     const afterCreate = useCallback(
         async (adapter: CallAdapter): Promise<CallAdapter> => {
+            let currentCallState: CallState = "None";
             adapter.on("callEnded", () => {
                 // On call ended
+                navigate(AppRoutes.home);
             });
             adapter.on("error", (e) => {
                 // Error is already acted upon by the Call composite, but the surrounding application could
@@ -41,33 +77,15 @@ export const ACSMeetingPage: FC = memo(() => {
                     callIdRef.current = state?.call?.id;
                     console.log(`Call Id: ${callIdRef.current}`);
                 }
-                console.log(state?.call?.state);
+                if (state?.call?.state && state.call.state !== currentCallState) {
+                    currentCallState = state.call.state;
+                    setCallState(currentCallState);
+                }
             });
             return adapter;
         },
-        [callIdRef]
+        [callIdRef, navigate]
     );
-    const user =
-        typeof initialStateRef.current?.user === "object"
-            ? initialStateRef.current.user
-            : undefined;
-    console.log(initialStateRef.current);
-    const token =
-        typeof initialStateRef.current?.token === "string"
-            ? initialStateRef.current.token
-            : undefined;
-    const credential = useMemo(() => {
-        if (!user?.communicationUserId) return undefined;
-        return createAutoRefreshingCredential(
-            toFlatCommunicationIdentifier(user),
-            token
-        );
-    }, [token, user?.communicationUserId]);
-
-    const displayName =
-        typeof initialStateRef.current?.displayName === "string"
-            ? initialStateRef.current.displayName
-            : undefined;
     const adapter = useAzureCommunicationCallAdapter(
         {
             userId: user,
@@ -90,28 +108,38 @@ export const ACSMeetingPage: FC = memo(() => {
         return () => window.removeEventListener("beforeunload", disposeAdapter);
     }, [adapter]);
 
-    if (!adapter || !initialStateRef.current?.user?.communicationUserId)
-        return <Spinner />;
+    // Set the host with the adapter, meetingJoinUrl, and token
+    useEffect(() => {
+        if (!adapter || !meetingJoinUrl || !token) return;
+        setHost(
+            USE_ACS_HOST
+                ? AcsLiveShareHost.create({
+                      callAdapter: adapter,
+                      teamsMeetingJoinUrl: meetingJoinUrl,
+                      acsTokenProvider: () => token,
+                  })
+                : TestLiveShareHost.create()
+        );
+    }, [adapter, meetingJoinUrl, token]);
 
-    const meetingJoinUrl =
-        typeof initialStateRef.current?.callLocator?.meetingLink === "string"
-            ? initialStateRef.current.callLocator.meetingLink
-            : "";
-
-    if (!host) {
-        host = USE_ACS_HOST
-            ? AcsLiveShareHost.create({
-                  callAdapter: adapter,
-                  teamsMeetingJoinUrl: meetingJoinUrl,
-                  acsTokenProvider: () => token,
-              })
-            : TestLiveShareHost.create();
+    if (!adapter || !initialStateRef.current?.user?.communicationUserId || !host) {
+        return (
+            <FlexColumn fill="both" vAlign="center" hAlign="center">
+                <Spinner />
+            </FlexColumn>
+        );
     }
+    if (callState !== 'Connected') {
+        return (
+            <FlexColumn fill="both">
+                <ACSCall adapter={adapter} />
+            </FlexColumn>
+        );
+    }
+    adapter.getState()
     return (
         <LiveShareWrapper host={host}>
-            <LiveBrowser
-                routePrefix={AppRoutes.acs.children.meeting.base}
-            />
+            <LiveBrowser displayName={displayName} routePrefix={AppRoutes.acs.children.meeting.base} />
             <FlexColumn
                 style={{
                     width: "280px",
@@ -122,7 +150,7 @@ export const ACSMeetingPage: FC = memo(() => {
                     zIndex: 3,
                 }}
             >
-                <ACSCall adapter={adapter} />
+                <ACSCall adapter={adapter} formFactor="mobile" />
             </FlexColumn>
         </LiveShareWrapper>
     );
