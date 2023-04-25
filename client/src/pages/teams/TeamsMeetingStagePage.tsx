@@ -6,7 +6,7 @@ import { LiveShareWrapper } from "../../components";
 import { LiveBrowser } from "../../components/live-browser";
 
 const host: ILiveShareHost = IN_TEAMS
-    ? (LiveShareHost.create() as ILiveShareHost)
+    ? LiveShareHost.create()
     : TestLiveShareHost.create();
 export const TeamsMeetingStagePage: FC = () => {
     return (
