@@ -4,151 +4,178 @@
  */
 
 import {
-    ContainerState,
     IFluidContainerInfo,
     IFluidTenantInfo,
     ILiveShareHost,
     INtpTimeInfo,
     UserMeetingRole,
 } from "@microsoft/live-share";
-import { AxiosInstance, CreateAxiosDefaults, default as axios } from "axios";
-import { CallAdapter } from "@azure/communication-react";
 
-const LiveShareRoutePrefix = "/livesync/v1/acs";
-const GetNtpTimeRoute = "getNTPTime";
-const GetFluidTenantInfoRoute = "fluid/tenantInfo/get";
-const RegisterClientRolesRoute = "clientRoles/register";
-const ClientRolesGetRoute = "clientRoles/get";
-const FluidTokenGetRoute = "fluid/token/get";
-const FluidContainerGetRoute = "fluid/container/get";
-const FluidContainerSetRoute = "fluid/container/set";
+const LiveShareRoutePrefix = '/livesync/v1/acs';
+const LiveShareBaseUrl = 'https://teams.microsoft.com/api/platform';
+const GetNtpTimeRoute = 'getNTPTime';
+const GetFluidTenantInfoRoute = 'fluid/tenantInfo/get';
+const RegisterClientRolesRoute = 'clientRoles/register';
+const ClientRolesGetRoute = 'clientRoles/get';
+const FluidTokenGetRoute = 'fluid/token/get';
+const FluidContainerGetRoute = 'fluid/container/get';
+const FluidContainerSetRoute = 'fluid/container/set';
 
 // TODO: move into separate NPM package
 export class AcsLiveShareHost implements ILiveShareHost {
     private constructor(
-        private readonly axios: AxiosInstance,
-        private readonly callAdapter: CallAdapter,
+        private readonly acsTokenProvider: () => string,
+        private readonly skypeUserId: string,
         private readonly meetingJoinUrl: string
-    ) {
-        if (!callAdapter.getState().isTeamsCall) {
-            throw new Error("only teams calls are supported");
-        }
+    ) {}
+
+    public static create(options: AcsLiveShareHostOptions): ILiveShareHost {
+        return new AcsLiveShareHost(
+            options.acsTokenProvider,
+            options.acsUserId,
+            options.teamsMeetingJoinUrl
+        );
     }
+
     async getClientRoles(
         clientId: string
     ): Promise<UserMeetingRole[] | undefined> {
         const request = this.constructBaseRequest() as FluidClientRolesInput;
         request.clientId = clientId;
-        const response = await this.axios.post<UserMeetingRole[]>(
-            `${LiveShareRoutePrefix}/${ClientRolesGetRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${ClientRolesGetRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data;
+        const data = await response.json();
+        return data.roles;
     }
+
     async getFluidContainerId(): Promise<IFluidContainerInfo> {
         const request = this.constructBaseRequest() as FluidGetContainerIdInput;
-        const response = await this.axios.post<IFluidContainerInfo>(
-            `${LiveShareRoutePrefix}/${FluidContainerGetRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${FluidContainerGetRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data;
+        const data = await response.json();
+        return data;
     }
+
     async getFluidTenantInfo(): Promise<IFluidTenantInfo> {
         const request = this.constructBaseRequest() as FluidTenantInfoInput;
         request.expiresAt = 0;
-        const response = await this.axios.post<FluidCollabTenantInfo>(
-            `${LiveShareRoutePrefix}/${GetFluidTenantInfoRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${GetFluidTenantInfoRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data.broadcaster.frsTenantInfo;
+
+        const data = await response.json();
+        return data.broadcaster.frsTenantInfo;
     }
+
     async getFluidToken(containerId?: string): Promise<string> {
         const request = this.constructBaseRequest() as FluidGetTokenInput;
         request.containerId = containerId;
-        const response = await this.axios.post<any>(
-            `${LiveShareRoutePrefix}/${FluidTokenGetRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${FluidTokenGetRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data.token;
+        const data = await response.json();
+        return data.token;
     }
+
     async getNtpTime(): Promise<INtpTimeInfo> {
-        const response = await this.axios.get<INtpTimeInfo>(
-            `${LiveShareRoutePrefix}/${GetNtpTimeRoute}`
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${GetNtpTimeRoute}`,
+            {
+                method: "GET",
+            }
         );
-        return response.data;
+        const data = await response.json();
+        return data;
     }
+
     async registerClientId(clientId: string): Promise<UserMeetingRole[]> {
         const request = this.constructBaseRequest() as FluidClientRolesInput;
         request.clientId = clientId;
-        const response = await this.axios.post<UserMeetingRole[]>(
-            `${LiveShareRoutePrefix}/${RegisterClientRolesRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${RegisterClientRolesRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data;
+        const data = await response.json();
+        return data;
     }
+
     async setFluidContainerId(
         containerId: string
     ): Promise<IFluidContainerInfo> {
         const request = this.constructBaseRequest() as FluidSetContainerIdInput;
         request.containerId = containerId;
-        const response = await this.axios.post(
-            `${LiveShareRoutePrefix}/${FluidContainerSetRoute}`,
-            request
+        const response = await fetch(
+            `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${FluidContainerSetRoute}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${this.acsTokenProvider()}`,
+                },
+                body: JSON.stringify(request),
+            }
         );
-        return response.data;
+        const data = await response.json();
+        return data;
     }
+
     private constructBaseRequest(): LiveShareRequestBase {
-        const userId = this.callAdapter.getState().userId;
-        if (userId.kind !== "communicationUser") {
-            throw new Error(`unsupported user id ${userId.kind}`);
-        }
         const originUri = window.location.href;
         return {
             originUri,
             teamsContextType: TeamsCollabContextType.MeetingJoinUrl,
             teamsContext: {
                 meetingJoinUrl: this.meetingJoinUrl,
-                skypeMri: userId.communicationUserId,
+                skypeMri: this.skypeUserId,
             },
         };
     }
-    public static create(options: AcsLiveShareHostOptions): ILiveShareHost {
-        const axiosDefaults: CreateAxiosDefaults<any> = {
-            baseURL: "https://teams.microsoft.com/api/platform",
-        };
-        const axiosConfig = { ...axiosDefaults, ...options?.axiosOptions };
-        const axiosInstance = axios.create(axiosConfig);
-        axiosInstance.interceptors.request.use((config) => {
-            const { acsTokenProvider } = options;
-            const token = acsTokenProvider();
-            config.headers.set("Authorization", `SkypeToken ${token}`, true);
-            return config;
-        });
-        return new AcsLiveShareHost(
-            axiosInstance,
-            options.callAdapter,
-            options.teamsMeetingJoinUrl
-        );
-    }
 }
 export interface AcsLiveShareHostOptions {
-    callAdapter: CallAdapter;
+    acsUserId: string;
     teamsMeetingJoinUrl: string;
     acsTokenProvider: () => string;
-    axiosOptions?: CreateAxiosDefaults<any>;
-}
-interface FluidCollabTenantInfo {
-    broadcaster: BroadcasterInfo;
-}
-interface BroadcasterInfo {
-    type: string;
-    frsTenantInfo: FluidTenantInfo;
-}
-interface FluidTenantInfo {
-    tenantId: string;
-    ordererEndpoint: string;
-    storageEndpoint: string;
-    serviceEndpoint: string;
 }
 interface FluidTenantInfoInput {
     appId?: string;
@@ -165,12 +192,6 @@ interface TeamsContext {
 interface FluidSetContainerIdInput extends LiveShareRequestBase {
     containerId: string;
 }
-interface FluidContainerInfo {
-    containerState: ContainerState;
-    shouldCreate: boolean;
-    containerId: string;
-    retryAfter: number;
-}
 interface FluidClientRolesInput extends LiveShareRequestBase {
     clientId: string;
 }
@@ -181,9 +202,6 @@ interface FluidGetTokenInput {
     teamsContext: TeamsContext;
     containerId?: string;
     // TODO: these are not used on server side    // userId?: string;    // userName?: string;
-}
-interface User {
-    mri: string;
 }
 enum TeamsCollabContextType {
     MeetingJoinUrl = 1,

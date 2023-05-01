@@ -111,10 +111,13 @@ export const ACSMeetingPage: FC = memo(() => {
     // Set the host with the adapter, meetingJoinUrl, and token
     useEffect(() => {
         if (!adapter || !meetingJoinUrl || !token) return;
+        const userId = adapter.getState().userId;
+        // Only communicationUser types are supported
+        if (userId.kind !== "communicationUser") return;
         setHost(
             USE_ACS_HOST
                 ? AcsLiveShareHost.create({
-                      callAdapter: adapter,
+                      acsUserId: userId.communicationUserId,
                       teamsMeetingJoinUrl: meetingJoinUrl,
                       acsTokenProvider: () => token,
                   })
