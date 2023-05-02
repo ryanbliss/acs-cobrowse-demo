@@ -69,6 +69,7 @@ export const LiveVideo: FC<ILiveVideoProps> = ({ videoUrl }) => {
                     poster="https://images4.alphacoders.com/247/247356.jpg"
                     height={9 * 40}
                     width={16 * 40}
+                    onClick={onTogglePlayPause}
                 />
                 <FlexRow gap="small">
                     <Button onClick={onTogglePlayPause}>{"Play/pause"}</Button>
