@@ -1,9 +1,9 @@
 import { useLiveCanvas, useSharedState } from "@microsoft/live-share-react";
 import { InkingTool, PointerInputProvider } from "@microsoft/live-share-canvas";
-import { FC, useRef, useEffect, useState, MutableRefObject } from "react";
+import { FC, useRef, useEffect, MutableRefObject } from "react";
 import { Button, tokens } from "@fluentui/react-components";
 import { NonClickablePointerInputProvider } from "../../../utils";
-import { FlexRow } from "../../flex";
+import { FlexRow } from "../../common";
 
 interface ILiveCanvasOverlayProps {
     displayName: string;

@@ -7,7 +7,7 @@ const ROUTE_KEY = "ROUTE_KEY";
 export const useLiveNavigate = (): (route: string) => void => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [remoteRoute, _, setRemoteRoute] = useLiveState<string>(ROUTE_KEY, location.pathname);
+    const [remoteRoute, setRemoteRoute] = useLiveState<string>(ROUTE_KEY, location.pathname);
 
     const onNavigate = useCallback((route: string) => {
         setRemoteRoute(route);

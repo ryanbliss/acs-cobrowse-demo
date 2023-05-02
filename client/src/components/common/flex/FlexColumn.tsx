@@ -5,7 +5,6 @@ import { FlexOptions, getFlexColumnStyles } from "./flex-styles";
 export interface IFlexColumnOptions extends FlexOptions {
   /** Unique property for styles for Side Panel or Tab content */
   isSidePanel?: boolean;
-  scroll?: boolean;
 }
 
 export const FlexColumn = forwardRef<HTMLDivElement, IFlexColumnOptions>((props, ref) => {
@@ -22,6 +21,7 @@ export const FlexColumn = forwardRef<HTMLDivElement, IFlexColumnOptions>((props,
     style,
     transparent,
     vAlign,
+    onClick,
   } = props;
   const flexColumnStyles = getFlexColumnStyles();
 
@@ -62,6 +62,7 @@ export const FlexColumn = forwardRef<HTMLDivElement, IFlexColumnOptions>((props,
       role={role && role}
       style={style}
       tabIndex={isHidden ? -1 : 0}
+      onClick={onClick}
     >
       {children}
     </div>

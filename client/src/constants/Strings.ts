@@ -1,3 +1,4 @@
+import { getRandomName } from "../utils";
 
 export const HOME_PAGE_BODY_1 = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis massa tincidunt dui ut ornare lectus sit. Tortor dignissim convallis aenean et tortor at risus viverra. Posuere ac ut consequat semper viverra. Vitae justo eget magna fermentum iaculis eu non. Nec dui nunc mattis enim ut tellus. A diam maecenas sed enim ut sem. In hac habitasse platea dictumst vestibulum rhoncus. Blandit libero volutpat sed cras. Pulvinar etiam non quam lacus suspendisse faucibus. Orci dapibus ultrices in iaculis nunc sed augue lacus viverra. Tristique sollicitudin nibh sit amet commodo nulla facilisi nullam vehicula. Pellentesque dignissim enim sit amet venenatis urna. A arcu cursus vitae congue mauris rhoncus aenean vel elit. Egestas sed tempus urna et pharetra. Donec ac odio tempor orci dapibus ultrices in iaculis. Semper auctor neque vitae tempus quam.
@@ -39,3 +40,4 @@ Justo laoreet sit amet cursus sit amet dictum sit. Varius vel pharetra vel turpi
 Enim nec dui nunc mattis enim ut. Cursus eget nunc scelerisque viverra mauris in. Sed enim ut sem viverra aliquet eget. Sit amet est placerat in egestas erat imperdiet. Bibendum est ultricies integer quis auctor elit sed. Faucibus pulvinar elementum integer enim. Ultricies integer quis auctor elit sed vulputate. Turpis cursus in hac habitasse platea dictumst quisque. Sit amet aliquam id diam maecenas ultricies mi eget mauris. Nisi quis eleifend quam adipiscing vitae proin.
 `;
 
+export const LOCAL_RANDOM_NAME = getRandomName();

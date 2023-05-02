@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { FlexColumn } from "../flex";
+import { FlexColumn } from "../common";
 import { tokens } from "@fluentui/react-theme";
 import { Subtitle2, Title1 } from "@fluentui/react-components";
 

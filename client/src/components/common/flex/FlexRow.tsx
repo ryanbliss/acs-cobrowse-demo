@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, forwardRef } from "react";
 import { mergeClasses } from "@fluentui/react-components";
 import { FlexOptions, getFlexRowStyles } from "./flex-styles";
 
@@ -7,7 +7,7 @@ export interface IFlexRowOptions extends FlexOptions {
   columnOnSmallScreen?: boolean;
 }
 
-export const FlexRow: FC<IFlexRowOptions> = (props) => {
+export const FlexRow = forwardRef<HTMLDivElement, IFlexRowOptions>((props, ref) => {
   const {
     children,
     // Merged classes from parent
@@ -18,6 +18,7 @@ export const FlexRow: FC<IFlexRowOptions> = (props) => {
     hAlign,
     name,
     role,
+    scroll,
     spaceBetween,
     style,
     transparent,
@@ -45,6 +46,7 @@ export const FlexRow: FC<IFlexRowOptions> = (props) => {
     hAlign === "start" && flexRowStyles.hAlignStart,
     isHidden && flexRowStyles.defaultCursor,
     isHidden && flexRowStyles.pointerEvents,
+    scroll && flexRowStyles.scroll,
     spaceBetween && flexRowStyles.spaceBetween,
     transparent && flexRowStyles.transparent,
     vAlign === "center" && flexRowStyles.vAlignCenter,
@@ -59,6 +61,7 @@ export const FlexRow: FC<IFlexRowOptions> = (props) => {
       aria-hidden={isHidden}
       data-name={!!name ? name : undefined}
       className={mergedClasses}
+      ref={ref}
       role={role && role}
       style={style}
       tabIndex={isHidden ? -1 : 0}
@@ -66,4 +69,4 @@ export const FlexRow: FC<IFlexRowOptions> = (props) => {
       {children}
     </div>
   );
-};
+});

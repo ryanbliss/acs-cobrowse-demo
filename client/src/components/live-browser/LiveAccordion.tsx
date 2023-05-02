@@ -14,13 +14,13 @@ interface ILiveAccordionProps {
     items: ILiveAccordionItem[];
 }
 export const LiveAccordion: FC<ILiveAccordionProps> = ({ uniqueKey, items }) => {
-    const [openItem, _, setOpenItems] = useLiveState<string>(uniqueKey, "unset");
+    const [openItem, setOpenItem] = useLiveState<string>(uniqueKey, "unset");
     const handleToggle = useCallback<AccordionToggleEventHandler>(
         (_, data) => {
             const value = typeof data.value === "string" ? data.value : "unset";
-            setOpenItems(value === openItem ? "unset": value);
+            setOpenItem(value === openItem ? "unset": value);
         },
-        [setOpenItems, openItem]
+        [setOpenItem, openItem]
     );
     return (
         <Accordion onToggle={handleToggle} openItems={openItem}>

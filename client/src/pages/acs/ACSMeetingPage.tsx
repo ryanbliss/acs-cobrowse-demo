@@ -3,40 +3,36 @@ import {
     useCallback,
     useRef,
     useMemo,
-    useEffect,
     memo,
     useState,
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ILiveShareHost, TestLiveShareHost } from "@microsoft/live-share";
 import { FlexColumn, LiveShareWrapper } from "../../components";
 import { LiveBrowser } from "../../components/live-browser";
 import { AppRoutes } from "../../constants";
-import { AcsLiveShareHost, createAutoRefreshingCredential } from "../../utils";
+import { createAutoRefreshingCredential } from "../../utils";
 import {
     CallAdapter,
     CallAdapterState,
     toFlatCommunicationIdentifier,
-    useAzureCommunicationCallAdapter,
 } from "@azure/communication-react";
 import { Spinner } from "@fluentui/react-components";
 import { ACSCall } from "../../components/acs-call/ACSCall";
 import { CallState } from "@azure/communication-calling";
-
-const USE_ACS_HOST = false;
+import { useACSCall, useACSLiveShareHost } from "../../hooks";
 
 export const ACSMeetingPage: FC = memo(() => {
     const { state } = useLocation();
-    const [host, setHost] = useState<ILiveShareHost>();
     const [callState, setCallState] = useState<CallState>("None");
     const initialStateRef = useRef(state);
     const callIdRef = useRef<string>();
     
+    // We do this here because the route may change later, and we don't want this state to be lost
     const user =
         typeof initialStateRef.current?.user === "object"
             ? initialStateRef.current.user
             : undefined;
-    const token =
+    const token: string | undefined =
         typeof initialStateRef.current?.token === "string"
             ? initialStateRef.current.token
             : undefined;
@@ -48,8 +44,10 @@ export const ACSMeetingPage: FC = memo(() => {
         typeof initialStateRef.current?.callLocator?.meetingLink === "string"
             ? initialStateRef.current.callLocator.meetingLink
             : "";
+
+    // Auto refreshing credential used by ACS
     const credential = useMemo(() => {
-        if (!user?.communicationUserId) return undefined;
+        if (!user?.communicationUserId || !token) return undefined;
         return createAutoRefreshingCredential(
             toFlatCommunicationIdentifier(user),
             token
@@ -84,13 +82,15 @@ export const ACSMeetingPage: FC = memo(() => {
             });
             return adapter;
         },
-        [callIdRef, navigate]
+        [navigate]
     );
-    const adapter = useAzureCommunicationCallAdapter(
+
+    // Creates a CallAdapter and CallAgent for a given meeting join URL
+    const acsResults = useACSCall(
         {
             userId: user,
             displayName,
-            credential: credential,
+            credential,
             locator:
                 typeof initialStateRef.current?.callLocator === "object"
                     ? initialStateRef.current.callLocator
@@ -98,34 +98,18 @@ export const ACSMeetingPage: FC = memo(() => {
         },
         afterCreate
     );
+    
+    // Stateful hook for the ILiveShareHost, which is set after connecting to a call
+    const host = useACSLiveShareHost(
+        acsResults,
+        callState,
+        callIdRef,
+        meetingJoinUrl,
+        token,
+        displayName,
+    );
 
-    // Dispose of the adapter in the window's before unload event.
-    // This ensures the service knows the user intentionally left the call if the user
-    // closed the browser tab during an active call.
-    useEffect(() => {
-        const disposeAdapter = (): void => adapter?.dispose();
-        window.addEventListener("beforeunload", disposeAdapter);
-        return () => window.removeEventListener("beforeunload", disposeAdapter);
-    }, [adapter]);
-
-    // Set the host with the adapter, meetingJoinUrl, and token
-    useEffect(() => {
-        if (!adapter || !meetingJoinUrl || !token) return;
-        const userId = adapter.getState().userId;
-        // Only communicationUser types are supported
-        if (userId.kind !== "communicationUser") return;
-        setHost(
-            USE_ACS_HOST
-                ? AcsLiveShareHost.create({
-                      acsUserId: userId.communicationUserId,
-                      teamsMeetingJoinUrl: meetingJoinUrl,
-                      acsTokenProvider: () => token,
-                  })
-                : TestLiveShareHost.create()
-        );
-    }, [adapter, meetingJoinUrl, token]);
-
-    if (!adapter || !initialStateRef.current?.user?.communicationUserId || !host) {
+    if (!acsResults?.adapter || !initialStateRef.current?.user?.communicationUserId) {
         return (
             <FlexColumn fill="both" vAlign="center" hAlign="center">
                 <Spinner />
@@ -135,11 +119,17 @@ export const ACSMeetingPage: FC = memo(() => {
     if (callState !== 'Connected') {
         return (
             <FlexColumn fill="both">
-                <ACSCall adapter={adapter} />
+                <ACSCall adapter={acsResults.adapter} />
             </FlexColumn>
         );
     }
-    adapter.getState()
+    if (!host) {
+        return (
+            <FlexColumn fill="both" vAlign="center" hAlign="center">
+                <Spinner />
+            </FlexColumn>
+        );
+    }
     return (
         <LiveShareWrapper host={host}>
             <LiveBrowser displayName={displayName} routePrefix={AppRoutes.acs.children.meeting.base} />
@@ -153,7 +143,7 @@ export const ACSMeetingPage: FC = memo(() => {
                     zIndex: 3,
                 }}
             >
-                <ACSCall adapter={adapter} formFactor="mobile" />
+                <ACSCall adapter={acsResults.adapter} formFactor="mobile" />
             </FlexColumn>
         </LiveShareWrapper>
     );

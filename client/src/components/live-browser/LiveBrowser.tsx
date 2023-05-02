@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from "react";
-import { FlexColumn } from "../flex";
+import { FlexColumn } from "../common";
 import { Spinner, tokens } from "@fluentui/react-components";
 import {
     useFluidObjectsContext,
@@ -7,52 +7,54 @@ import {
 } from "@microsoft/live-share-react";
 import { PresenceState } from "@microsoft/live-share";
 import { Outlet } from "react-router-dom";
-import { useLiveNavigate } from "./useLiveNavigate";
-import { NavigationBar } from "../navigation";
-import { LiveCanvasOverlay } from "./internals";
+import {
+    LiveCanvasOverlay,
+    LiveNavigationBar,
+    useLiveNavigate,
+} from "./internals";
 import debounce from "lodash.debounce";
+import { AppContextProvider } from "../../context";
+import { useCommonScreenSize } from "../../hooks";
+import { IUserData } from "../../interfaces";
+import { LOCAL_RANDOM_NAME } from "../../constants";
 
 interface ILiveBrowserProps {
     displayName: string;
     routePrefix: string;
 }
 
-export const LiveBrowser: FC<ILiveBrowserProps> = ({ displayName, routePrefix }) => {
+export const LiveBrowser: FC<ILiveBrowserProps> = ({
+    displayName,
+    routePrefix,
+}) => {
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate();
-    const { allUsers, updatePresence } = useLivePresence<{
-        width: number;
-        height: number;
-    }>(undefined, {
-        width: window.document.body.clientWidth,
-        height: window.document.body.clientHeight,
-    });
 
-    const onlineUsers = allUsers.filter((user) => user.state === PresenceState.online);
-    const sortedWidthUsers = [...onlineUsers].sort(
-        (a, b) => (a.data?.width || 0) - (b.data?.width || 0)
+    const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>(
+        undefined,
+        {
+            // TODO: remove custom display name once new presence changes are in
+            displayName,
+            screenWidth: window.document.body.clientWidth,
+            screenHeight: window.document.body.clientHeight,
+        }
     );
-    const width =
-        sortedWidthUsers.length > 0 ? sortedWidthUsers[0].data?.width : 0;
-    const sortedHeightUsers = [...onlineUsers].sort(
-        (a, b) => (a.data?.height || 0) - (b.data?.height || 0)
-    );
-    const height =
-        sortedHeightUsers.length > 0 ? sortedHeightUsers[0].data?.height : 0;
+    const { width, height } = useCommonScreenSize(allUsers);
 
     useEffect(() => {
         const onResize = debounce((_: Event) => {
             updatePresence(PresenceState.online, {
-                width: window.document.body.clientWidth,
-                height: window.document.body.clientHeight,
+                displayName,
+                screenWidth: window.document.body.clientWidth,
+                screenHeight: window.document.body.clientHeight,
             });
         }, 50);
         window.addEventListener("resize", onResize, true);
         return () => {
             window.removeEventListener("resize", onResize, true);
         };
-    }, [updatePresence]);
+    }, [displayName, updatePresence]);
 
     if (!container) {
         return (
@@ -62,22 +64,30 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ displayName, routePrefix })
         );
     }
     return (
-        <FlexColumn
-            style={{
-                width: `${width}px`,
-                height: `${height}px`,
-                backgroundColor: tokens.colorNeutralBackground1,
-            }}
-            ref={browserContainerRef}
+        <AppContextProvider
+            navigate={navigate}
+            width={width}
+            height={height}
+            allUsers={allUsers}
+            localUser={localUser}
         >
-            <LiveCanvasOverlay
-                displayName={displayName}
-                width={width ?? 0}
-                height={height ?? 0}
-                hostRef={browserContainerRef}
-            />
-            <NavigationBar routePrefix={routePrefix} navigate={navigate} />
-            <Outlet />
-        </FlexColumn>
+            <FlexColumn
+                style={{
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    backgroundColor: tokens.colorNeutralBackground1,
+                }}
+                ref={browserContainerRef}
+            >
+                <LiveCanvasOverlay
+                    displayName={displayName}
+                    width={width ?? 0}
+                    height={height ?? 0}
+                    hostRef={browserContainerRef}
+                />
+                <LiveNavigationBar routePrefix={routePrefix} />
+                <Outlet />
+            </FlexColumn>
+        </AppContextProvider>
     );
 };

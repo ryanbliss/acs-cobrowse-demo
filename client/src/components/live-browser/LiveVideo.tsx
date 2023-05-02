@@ -5,7 +5,7 @@ import {
     MediaPlayerSynchronizerEvents,
 } from "@microsoft/live-share-media";
 import { FC, useRef, useEffect, useCallback } from "react";
-import { FlexColumn, FlexRow } from "../flex";
+import { FlexColumn, FlexRow } from "../common";
 import { Button } from "@fluentui/react-components";
 
 interface ILiveVideoProps {

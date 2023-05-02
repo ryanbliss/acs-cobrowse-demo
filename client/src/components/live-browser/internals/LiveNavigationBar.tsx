@@ -1,13 +1,14 @@
 import { FC } from "react";
-import { FlexRow } from "../flex";
+import { FlexRow } from "../../common";
 import { Button, tokens } from "@fluentui/react-components";
+import { useAppContext } from "../../../context";
 
-interface INavigationBarProps {
+interface ILiveNavigationBarProps {
     routePrefix: string;
-    navigate: (route: string) => void;
 }
 
-export const NavigationBar: FC<INavigationBarProps> = ({ routePrefix, navigate }) => {
+export const LiveNavigationBar: FC<ILiveNavigationBarProps> = ({ routePrefix }) => {
+    const { navigate } = useAppContext();
     return (
         <FlexRow vAlign="center" style={{
             padding: "8px",
