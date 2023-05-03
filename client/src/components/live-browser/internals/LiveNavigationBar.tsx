@@ -3,9 +3,10 @@ import { FlexRow } from "../../common";
 import { Button, tokens } from "@fluentui/react-components";
 import { useAppContext } from "../../../context";
 import { LiveAvatars } from "./LiveAvatars";
+import { LiveRoutePrefix } from "../../../constants";
 
 interface ILiveNavigationBarProps {
-    routePrefix: string;
+    routePrefix: LiveRoutePrefix;
 }
 
 export const LiveNavigationBar: FC<ILiveNavigationBarProps> = ({

@@ -1,20 +1,19 @@
 import {
     Accordion,
-    AccordionHeader,
-    AccordionItem,
-    AccordionPanel,
     AccordionToggleEventHandler,
-    Caption1,
+    AccordionProps,
+    tokens,
 } from "@fluentui/react-components";
-import { useCallback, FC } from "react";
+import { useCallback, FC, ReactNode } from "react";
 import { useLiveState } from "@microsoft/live-share-react";
 
-interface ILiveAccordionProps {
+interface ILiveAccordionProps extends Partial<AccordionProps> {
     uniqueKey: string;
-    items: ILiveAccordionItem[];
+    initialOpenItem?: string;
+    children?: ReactNode;
 }
-export const LiveAccordion: FC<ILiveAccordionProps> = ({ uniqueKey, items }) => {
-    const [openItem, setOpenItem] = useLiveState<string>(uniqueKey, "unset");
+export const LiveAccordion: FC<ILiveAccordionProps> = ({ uniqueKey, initialOpenItem, children, }) => {
+    const [openItem, setOpenItem] = useLiveState<string | undefined>(uniqueKey, initialOpenItem || "unset");
     const handleToggle = useCallback<AccordionToggleEventHandler>(
         (_, data) => {
             const value = typeof data.value === "string" ? data.value : "unset";
@@ -23,23 +22,12 @@ export const LiveAccordion: FC<ILiveAccordionProps> = ({ uniqueKey, items }) => 
         [setOpenItem, openItem]
     );
     return (
-        <Accordion onToggle={handleToggle} openItems={openItem}>
-            {items.map((item) => (
-                <AccordionItem value={item.value} key={item.value}>
-                    <AccordionHeader>
-                        {item.displayValue}
-                    </AccordionHeader>
-                    <AccordionPanel>
-                        <Caption1>{item.innerText}</Caption1>
-                    </AccordionPanel>
-                </AccordionItem>
-            ))}
+        <Accordion onToggle={handleToggle} openItems={openItem} style={{
+            backgroundColor: tokens.colorNeutralBackground1,
+            borderRadius: "8px",
+            boxShadow: tokens.shadow2,
+        }}>
+            {children}
         </Accordion>
     );
 };
-
-export interface ILiveAccordionItem {
-    value: string;
-    displayValue: string;
-    innerText: string;
-}

@@ -8,3 +8,16 @@ export interface IUserData {
 }
 
 export type PresenceUser = LivePresenceUser<IUserData>;
+
+export interface IStep {
+    title: string;
+    body: string;
+}
+
+export interface IOffer {
+    id: string;
+    type: "CHECKING" | "SAVINGS";
+    amount: number;
+    steps: IStep[];
+    expiresFormattedDate: string;
+}

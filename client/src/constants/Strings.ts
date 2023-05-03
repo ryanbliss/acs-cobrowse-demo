@@ -1,5 +1,11 @@
 import { getRandomName } from "../utils";
 
+export const HOME_PAGE_OFFER_COPY_TITLE = "Get started";
+export const HOME_PAGE_OFFER_COPY_BODY = "When you open a new checking account with Contoso Bank, and follow the steps mentioned below, you are eligible for a :offer-amount: bonus into your :offer-type: account!";
+export const HOME_PAGE_OFFER_STEPS_TITLE = "Complete :steps-count: easy steps to earn :offer-amount:";
+
+export const OFFER_SIGN_UP_TITLE = "Let's set up your account information"
+
 export const HOME_PAGE_BODY_1 = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis massa tincidunt dui ut ornare lectus sit. Tortor dignissim convallis aenean et tortor at risus viverra. Posuere ac ut consequat semper viverra. Vitae justo eget magna fermentum iaculis eu non. Nec dui nunc mattis enim ut tellus. A diam maecenas sed enim ut sem. In hac habitasse platea dictumst vestibulum rhoncus. Blandit libero volutpat sed cras. Pulvinar etiam non quam lacus suspendisse faucibus. Orci dapibus ultrices in iaculis nunc sed augue lacus viverra. Tristique sollicitudin nibh sit amet commodo nulla facilisi nullam vehicula. Pellentesque dignissim enim sit amet venenatis urna. A arcu cursus vitae congue mauris rhoncus aenean vel elit. Egestas sed tempus urna et pharetra. Donec ac odio tempor orci dapibus ultrices in iaculis. Semper auctor neque vitae tempus quam.
 

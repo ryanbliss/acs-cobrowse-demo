@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
-    teamsLightTheme,
-    teamsDarkTheme,
+    webLightTheme,
+    webDarkTheme,
     teamsHighContrastTheme,
     FluentProvider,
 } from "@fluentui/react-components";
@@ -17,6 +17,8 @@ import {
     ACSPage,
     ACSJoinMeetingPage,
     ACSMeetingPage,
+    BrowseOfferSignUpPage,
+    BrowseOfferThankYouPage,
 } from "./pages";
 import { useEffect, useRef, useState } from "react";
 import { app } from "@microsoft/teams-js";
@@ -24,7 +26,7 @@ import { app } from "@microsoft/teams-js";
 function App() {
     const startedInitializingRef = useRef(false);
     const [initialized, setInitialized] = useState(false);
-    const [teamsTheme, setTeamsTheme] = useState(teamsLightTheme);
+    const [teamsTheme, setTeamsTheme] = useState(webLightTheme);
 
     useEffect(() => {
         // This hook should only be called once, so we use a ref to track if it has been called.
@@ -49,24 +51,24 @@ function App() {
                 const curTheme = context.app.theme;
                 switch (curTheme) {
                     case "dark":
-                        setTeamsTheme(teamsDarkTheme);
+                        setTeamsTheme(webDarkTheme);
                         break;
                     case "contrast":
                         setTeamsTheme(teamsHighContrastTheme);
                         break;
                     case "default":
                     default:
-                        setTeamsTheme(teamsLightTheme);
+                        setTeamsTheme(webLightTheme);
                         break;
                 }
                 app.registerOnThemeChangeHandler(
                     (theme: string | undefined) => {
                         if (theme == "dark") {
-                            setTeamsTheme(teamsDarkTheme);
+                            setTeamsTheme(webDarkTheme);
                         } else if (theme == "contrast") {
                             setTeamsTheme(teamsHighContrastTheme);
                         } else {
-                            setTeamsTheme(teamsLightTheme);
+                            setTeamsTheme(webLightTheme);
                         }
                     }
                 );
@@ -117,6 +119,20 @@ function App() {
                                 }
                                 element={<BrowseAboutPage />}
                             />
+                            <Route
+                                path={
+                                    AppRoutes.teams.children.meeting.children
+                                        .offerSignUp
+                                }
+                                element={<BrowseOfferSignUpPage />}
+                            />
+                            <Route
+                                path={
+                                    AppRoutes.teams.children.meeting.children
+                                        .offerThankYou
+                                }
+                                element={<BrowseOfferThankYouPage />}
+                            />
                         </Route>
                     </Route>
                     <Route path={AppRoutes.acs.base} element={<ACSPage />}>
@@ -141,6 +157,20 @@ function App() {
                                         .about
                                 }
                                 element={<BrowseAboutPage />}
+                            />
+                            <Route
+                                path={
+                                    AppRoutes.acs.children.meeting.children
+                                        .offerSignUp
+                                }
+                                element={<BrowseOfferSignUpPage />}
+                            />
+                            <Route
+                                path={
+                                    AppRoutes.acs.children.meeting.children
+                                        .offerThankYou
+                                }
+                                element={<BrowseOfferThankYouPage />}
                             />
                         </Route>
                     </Route>

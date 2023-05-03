@@ -16,10 +16,11 @@ import debounce from "lodash.debounce";
 import { AppContextProvider } from "../../context";
 import { useCommonScreenSize } from "../../hooks";
 import { IUserData } from "../../interfaces";
+import { LiveRoutePrefix } from "../../constants";
 
 interface ILiveBrowserProps {
     displayName: string;
-    routePrefix: string;
+    routePrefix: LiveRoutePrefix;
 }
 
 export const LiveBrowser: FC<ILiveBrowserProps> = ({
@@ -28,7 +29,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
 }) => {
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
-    const navigate = useLiveNavigate();
+    const navigate = useLiveNavigate(routePrefix);
 
     const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>(
         undefined,
@@ -69,6 +70,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
             height={height}
             allUsers={allUsers}
             localUser={localUser}
+            routePrefix={routePrefix}
         >
             <FlexColumn
                 style={{

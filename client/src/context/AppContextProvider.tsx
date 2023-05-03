@@ -1,22 +1,25 @@
 import { FC, ReactNode, createContext, useContext } from "react";
 import { PresenceUser } from "../interfaces";
+import { LiveRoutePrefix } from "../constants";
 
 interface IAppContextProviderProps {
-    navigate: (route: string) => void;
-    width: number;
-    height: number;
     allUsers: PresenceUser[];
-    localUser: PresenceUser | undefined;
     children?: ReactNode;
+    height: number;
+    localUser: PresenceUser | undefined;
+    navigate: (route: string) => void;
+    routePrefix: LiveRoutePrefix;
+    width: number;
 }
 
 export const AppContextProvider: FC<IAppContextProviderProps> = ({
-    children,
-    width,
-    height,
     allUsers,
+    children,
+    height,
     localUser,
     navigate,
+    routePrefix,
+    width,
 }) => {
     return (
         <AppContext.Provider
@@ -26,6 +29,7 @@ export const AppContextProvider: FC<IAppContextProviderProps> = ({
                 height,
                 allUsers,
                 localUser,
+                routePrefix,
             }}
         >
             {children}
@@ -39,6 +43,7 @@ interface IAppContext {
     height: number;
     allUsers: PresenceUser[];
     localUser: PresenceUser | undefined;
+    routePrefix: LiveRoutePrefix;
 }
 
 const AppContext = createContext<IAppContext>(

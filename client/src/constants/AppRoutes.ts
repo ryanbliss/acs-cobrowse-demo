@@ -1,6 +1,12 @@
 
 const TEAMS_BASE_ROUTE = "/teams";
 const ACS_BASE_ROUTE = "/acs";
+
+export enum LiveRoutePrefix {
+    TEAMS = "/teams/meeting",
+    ACS = "/acs/meeting",
+}
+
 export const AppRoutes = {
     home: "/",
     teams: {
@@ -8,10 +14,12 @@ export const AppRoutes = {
         children: {
             config: TEAMS_BASE_ROUTE + "/config",
             meeting: {
-                base: TEAMS_BASE_ROUTE + "/meeting",
+                base: LiveRoutePrefix.TEAMS,
                 children: {
-                    home: TEAMS_BASE_ROUTE + "/meeting/",
-                    about: TEAMS_BASE_ROUTE + "/meeting/about",
+                    home: LiveRoutePrefix.TEAMS + "/",
+                    about: LiveRoutePrefix.TEAMS + "/about",
+                    offerSignUp: LiveRoutePrefix.TEAMS + "/offer-sign-up/:offerId",
+                    offerThankYou: LiveRoutePrefix.TEAMS + "/offer-thank-you/:offerId",
                 },
             },
             sidePanel: TEAMS_BASE_ROUTE + "/side-panel",
@@ -22,10 +30,12 @@ export const AppRoutes = {
         children: {
             meetingJoin: ACS_BASE_ROUTE + "/meeting-join",
             meeting: {
-                base: ACS_BASE_ROUTE + "/meeting",
+                base: LiveRoutePrefix.ACS,
                 children: {
-                    home: ACS_BASE_ROUTE + "/meeting/",
-                    about: ACS_BASE_ROUTE + "/meeting/about",
+                    home: LiveRoutePrefix.ACS + "/",
+                    about: LiveRoutePrefix.ACS + "/about",
+                    offerSignUp: LiveRoutePrefix.ACS + "/offer-sign-up/:offerId",
+                    offerThankYou: LiveRoutePrefix.ACS + "/offer-thank-you/:offerId",
                 },
             },
         },

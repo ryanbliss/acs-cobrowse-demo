@@ -4,9 +4,10 @@ import {
     IMediaPlayerSynchronizerEvent,
     MediaPlayerSynchronizerEvents,
 } from "@microsoft/live-share-media";
-import { FC, useRef, useEffect, useCallback } from "react";
+import { FC, useRef, useEffect, useCallback, useState, memo } from "react";
 import { FlexColumn, FlexRow } from "../common";
 import { Button } from "@fluentui/react-components";
+import { Play24Regular, Pause24Regular, Speaker224Regular, SpeakerMute24Regular } from "@fluentui/react-icons";
 
 interface ILiveVideoProps {
     videoUrl: string;
@@ -14,9 +15,12 @@ interface ILiveVideoProps {
 
 const ALLOWED_ROLES = [UserMeetingRole.organizer, UserMeetingRole.presenter];
 
-export const LiveVideo: FC<ILiveVideoProps> = ({ videoUrl }) => {
+export const LiveVideo: FC<ILiveVideoProps> = memo(({ videoUrl }) => {
+    console.log(videoUrl);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { play, pause, seekTo, mediaSynchronizer } = useMediaSynchronizer(
+    const [playing, setPlaying] = useState(false);
+    const [muted, setMuted] = useState(false);
+    const { play, pause, mediaSynchronizer } = useMediaSynchronizer(
         "MEDIA-SESSION-ID",
         videoRef,
         videoUrl,
@@ -36,6 +40,7 @@ export const LiveVideo: FC<ILiveVideoProps> = ({ videoUrl }) => {
                     // mute the player and try again
                     videoRef.current.muted = true;
                     videoRef.current.play();
+                    setMuted(true);
                 } else {
                     console.error(evt.error);
                 }
@@ -53,6 +58,27 @@ export const LiveVideo: FC<ILiveVideoProps> = ({ videoUrl }) => {
         };
     }, [mediaSynchronizer]);
 
+    // Effect to listen for changes to player state so to render correct play/pause buttons
+    useEffect(() => {
+        if (!videoRef.current) return;
+        let mounted = true;
+        const onPlayingListener = () => {
+            if (!mounted) return;
+            setPlaying(true);
+        };
+        videoRef.current.addEventListener("playing", onPlayingListener);
+        const onPauseListener = () => {
+            if (!mounted) return;
+            setPlaying(false);
+        };
+        videoRef.current.addEventListener("pause", onPauseListener);
+        return () => {
+            mounted = false;
+            videoRef.current?.removeEventListener("playing", onPlayingListener);
+            videoRef.current?.removeEventListener("pause", onPauseListener);
+        };
+    }, []);
+
     const onTogglePlayPause = useCallback(() => {
         if (videoRef.current?.paused) {
             play();
@@ -66,32 +92,27 @@ export const LiveVideo: FC<ILiveVideoProps> = ({ videoUrl }) => {
             <FlexColumn gap="small">
                 <video
                     ref={videoRef}
-                    poster="https://images4.alphacoders.com/247/247356.jpg"
                     height={9 * 40}
                     width={16 * 40}
                     onClick={onTogglePlayPause}
                 />
-                <FlexRow gap="small">
-                    <Button onClick={onTogglePlayPause}>{"Play/pause"}</Button>
+                <FlexRow gap="smaller">
                     <Button
-                        onClick={() => {
-                            seekTo(0);
-                        }}
-                    >
-                        {"Start over"}
-                    </Button>
+                        onClick={onTogglePlayPause}
+                        icon={playing ? <Pause24Regular /> : <Play24Regular />}
+                    />
                     <Button
                         onClick={() => {
                             if (videoRef.current) {
                                 videoRef.current.muted =
                                     !videoRef.current.muted;
+                                setMuted(videoRef.current.muted);
                             }
                         }}
-                    >
-                        {"Mute/unmute"}
-                    </Button>
+                        icon={muted ? <SpeakerMute24Regular /> : <Speaker224Regular />}
+                    />
                 </FlexRow>
             </FlexColumn>
         </>
     );
-};
+});
