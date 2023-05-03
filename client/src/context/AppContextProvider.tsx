@@ -5,28 +5,28 @@ import { LiveRoutePrefix } from "../constants";
 interface IAppContextProviderProps {
     allUsers: PresenceUser[];
     children?: ReactNode;
-    height: number;
+    commonHeight: number;
+    commonWidth: number;
     localUser: PresenceUser | undefined;
     navigate: (route: string) => void;
     routePrefix: LiveRoutePrefix;
-    width: number;
 }
 
 export const AppContextProvider: FC<IAppContextProviderProps> = ({
     allUsers,
     children,
-    height,
+    commonHeight,
+    commonWidth,
     localUser,
     navigate,
     routePrefix,
-    width,
 }) => {
     return (
         <AppContext.Provider
             value={{
                 navigate,
-                width,
-                height,
+                commonWidth: commonWidth,
+                commonHeight: commonHeight,
                 allUsers,
                 localUser,
                 routePrefix,
@@ -39,8 +39,8 @@ export const AppContextProvider: FC<IAppContextProviderProps> = ({
 
 interface IAppContext {
     navigate: (route: string) => void;
-    width: number;
-    height: number;
+    commonWidth: number;
+    commonHeight: number;
     allUsers: PresenceUser[];
     localUser: PresenceUser | undefined;
     routePrefix: LiveRoutePrefix;

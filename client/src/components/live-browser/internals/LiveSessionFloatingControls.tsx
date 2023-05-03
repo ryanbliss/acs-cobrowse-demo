@@ -15,7 +15,7 @@ interface ILiveSessionFloatingControlsProps {
 export const LiveSessionFloatingControls: FC<
     ILiveSessionFloatingControlsProps
 > = ({ inkingManager, inkingActive, setInkingActive }) => {
-    const { width } = useAppContext();
+    const { commonWidth: width } = useAppContext();
     return (
         <FlexRow
             hAlign="center"

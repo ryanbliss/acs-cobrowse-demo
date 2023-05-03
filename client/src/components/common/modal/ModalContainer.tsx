@@ -16,7 +16,7 @@ export const ModalContainer: FC<IModalContainerProps> = ({
     dismissRoute,
     title,
 }) => {
-    const { width, height, navigate } = useAppContext();
+    const { commonWidth, commonHeight, navigate } = useAppContext();
     const onDismiss = () => {
         navigate(dismissRoute);
     };
@@ -29,8 +29,8 @@ export const ModalContainer: FC<IModalContainerProps> = ({
                 zIndex: 1,
                 left: 0,
                 right: 0,
-                width: `${width}px`,
-                height: `${height}px`,
+                width: `${commonWidth}px`,
+                height: `${commonHeight}px`,
             }}
             vAlign="center"
             hAlign="center"

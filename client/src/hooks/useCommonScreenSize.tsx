@@ -2,8 +2,8 @@ import { PresenceUser } from "../interfaces";
 import { PresenceState } from "@microsoft/live-share";
 
 export const useCommonScreenSize = (allUsers: PresenceUser[]): {
-    width: number,
-    height: number,
+    commonWidth: number,
+    commonHeight: number,
 } => {
     const onlineUsers = allUsers.filter(
         (user) => user.state === PresenceState.online
@@ -21,7 +21,7 @@ export const useCommonScreenSize = (allUsers: PresenceUser[]): {
             ? sortedHeightUsers[0].data?.screenHeight
             : 0;
     return {
-        width: width ?? 0,
-        height: height ?? 0,
+        commonWidth: width ?? 0,
+        commonHeight: height ?? 0,
     };
 }
