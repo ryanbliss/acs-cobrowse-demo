@@ -16,7 +16,6 @@ import debounce from "lodash.debounce";
 import { AppContextProvider } from "../../context";
 import { useCommonScreenSize } from "../../hooks";
 import { IUserData } from "../../interfaces";
-import { LOCAL_RANDOM_NAME } from "../../constants";
 
 interface ILiveBrowserProps {
     displayName: string;
@@ -80,9 +79,6 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
                 ref={browserContainerRef}
             >
                 <LiveCanvasOverlay
-                    displayName={displayName}
-                    width={width ?? 0}
-                    height={height ?? 0}
                     hostRef={browserContainerRef}
                 />
                 <LiveNavigationBar routePrefix={routePrefix} />
