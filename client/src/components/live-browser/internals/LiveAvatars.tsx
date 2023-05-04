@@ -15,7 +15,7 @@ export const LiveAvatars: FC<ILiveAvatarsProps> = () => {
     const { inlineItems, overflowItems } = partitionAvatarGroupItems({
         items: allUsers
             .filter((user) => user.data && user.state === PresenceState.online)
-            .map((user) => user.data!.displayName),
+            .map((user) => user.displayName),
     });
 
     return (

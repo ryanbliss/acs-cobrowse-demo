@@ -2,7 +2,7 @@ import { FC, ReactNode, CSSProperties, useRef, useEffect } from "react";
 import { FlexColumn, FlexItem, FlexRow } from "../../common/flex";
 import debounce from "lodash.debounce";
 import { useLiveState } from "@microsoft/live-share-react";
-import { LiveEvent } from "@microsoft/live-share";
+import { LiveEvent, LiveShareClient } from "@microsoft/live-share";
 import { useAppContext } from "../../../context";
 import { useStateToRef } from "../../../hooks";
 
@@ -32,7 +32,7 @@ export const LiveScrollView: FC<ILiveScrollViewProps> = ({
     // Tracks the remote scroll position, when the change occurred, and which user last made the change
     const [remoteScrollData, setRemoteScrollData] = useLiveState<IScrollData>(
         uniqueKey,
-        { scrollTop: 0, scrollLeft: 0, timestamp: LiveEvent.getTimestamp() }
+        { scrollTop: 0, scrollLeft: 0, timestamp: LiveShareClient.getTimestamp() }
     );
     // Wraps the remote scroll data into React.useRef, so it can easily be accessed in JS event listeners
     const remoteScrollDataRef = useStateToRef(remoteScrollData);
@@ -44,7 +44,7 @@ export const LiveScrollView: FC<ILiveScrollViewProps> = ({
     useEffect(() => {
         // Send the updated scroll position with a debounce to minimize events sent
         const sendScrollEvent = debounce((event: Event) => {
-            const timestamp = LiveEvent.getTimestamp();
+            const timestamp = LiveShareClient.getTimestamp();
             const scrollTop = (event.target as any)?.scrollTop;
             const scrollLeft = (event.target as any)?.scrollLeft;
             if (typeof scrollTop !== "number" || typeof scrollLeft !== "number")
@@ -52,7 +52,7 @@ export const LiveScrollView: FC<ILiveScrollViewProps> = ({
             setRemoteScrollData({ scrollTop, scrollLeft, timestamp, userId: localUser?.userId });
         }, 25);
         const onScrollEvent = (event: Event) => {
-            const timestamp = LiveEvent.getTimestamp();
+            const timestamp = LiveShareClient.getTimestamp();
             // If the local user is trying to scroll on this view while another user has recently scrolled, we scroll back to the remote scroll position.
             if (remoteScrollDataRef.current?.userId !== localUser?.userId && timestamp - remoteScrollDataRef.current.timestamp <= 500) {
                 const remoteScrollTop = remoteScrollDataRef.current?.scrollTop ?? 0;

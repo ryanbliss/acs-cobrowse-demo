@@ -5,7 +5,6 @@ import {
     useFluidObjectsContext,
     useLivePresence,
 } from "@microsoft/live-share-react";
-import { PresenceState } from "@microsoft/live-share";
 import { Outlet } from "react-router-dom";
 import {
     LiveCanvasOverlay,
@@ -32,10 +31,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
     const navigate = useLiveNavigate(routePrefix);
 
     const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>(
-        undefined,
         {
-            // TODO: remove custom display name once new presence changes are in
-            displayName,
             screenWidth: window.document.body.clientWidth,
             screenHeight: window.document.body.clientHeight,
         }
@@ -48,8 +44,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
     // That then updates the allUsers list, which causes `useCommonScreenSize` to refresh.
     useEffect(() => {
         const onResize = debounce((_: Event) => {
-            updatePresence(PresenceState.online, {
-                displayName,
+            updatePresence({
                 screenWidth: window.document.body.clientWidth,
                 screenHeight: window.document.body.clientHeight,
             });

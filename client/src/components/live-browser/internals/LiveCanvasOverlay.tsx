@@ -10,7 +10,7 @@ interface ILiveCanvasOverlayProps {
 }
 
 export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({ pointerElementRef }) => {
-    const { localUser, commonWidth, commonHeight } = useAppContext();
+    const { commonWidth, commonHeight } = useAppContext();
     const canvasRef = useRef<HTMLDivElement>(null);
     const [inkingActive, setInkingActive] = useState(false);
     const { inkingManager } = useLiveCanvas(
@@ -23,10 +23,6 @@ export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({ pointerElementR
         undefined, // scale. We don't change this in this sample, though it would be a good idea since users can zoom in/out on browser.
         "topLeft", // referencePoint. We always have our app positioned in topLeft corner of screen.
         true, // isCursorShared
-        // TODO: remove once new SDK version is published
-        {
-            displayName: localUser?.data?.displayName,
-        }
     );
 
     useEffect(() => {
