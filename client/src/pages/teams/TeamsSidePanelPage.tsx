@@ -2,7 +2,7 @@ import { FC } from "react";
 import { FlexColumn } from "../../components";
 import { Button, Title2 } from "@fluentui/react-components";
 import { meeting } from "@microsoft/teams-js";
-import { AppRoutes, IN_TEAMS } from "../../constants";
+import { AppRoutes, FLUID_ENVIRONMENT, IN_TEAMS } from "../../constants";
 
 export const TeamsSidePanelPage: FC = () => {
     return (
@@ -10,7 +10,7 @@ export const TeamsSidePanelPage: FC = () => {
             <Title2>{"Press 'Share to meeting' to begin."}</Title2>
             <Button
                 onClick={() => {
-                    const urlToShare = `${window.location.origin}${AppRoutes.teams.children.meeting}?inTeams=${IN_TEAMS}`;
+                    const urlToShare = `${window.location.origin}${AppRoutes.teams.children.meeting}?fluidEnv=${FLUID_ENVIRONMENT}`;
                     if (IN_TEAMS) {
                         meeting.shareAppContentToStage((error, result) => {
                             if (error) {
