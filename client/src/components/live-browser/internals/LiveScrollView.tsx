@@ -3,7 +3,7 @@ import { FlexColumn, FlexItem, FlexRow } from "../../common/flex";
 import debounce from "lodash.debounce";
 import { useLiveState } from "@microsoft/live-share-react";
 import { LiveEvent, LiveShareClient } from "@microsoft/live-share";
-import { useAppContext } from "../../../context";
+import { useLiveBrowserContext } from "../../../context";
 import { useStateToRef } from "../../../hooks";
 
 interface ILiveScrollViewProps {
@@ -37,7 +37,7 @@ export const LiveScrollView: FC<ILiveScrollViewProps> = ({
     // Wraps the remote scroll data into React.useRef, so it can easily be accessed in JS event listeners
     const remoteScrollDataRef = useStateToRef(remoteScrollData);
 
-    const { localUser } = useAppContext();
+    const { localUser } = useLiveBrowserContext();
 
     // Registers an event listener to scroll position changes and sets remoteScrollData if updated.
     // There is some logic in place that will prevent local scrolling if a remote user has scrolled recently, which helps reduce conflicts.

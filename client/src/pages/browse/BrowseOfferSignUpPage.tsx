@@ -1,5 +1,4 @@
 import { FC, useCallback } from "react";
-import { useParams } from "react-router-dom";
 import {
     ContentBlockWrapper,
     FlexColumn,
@@ -16,16 +15,14 @@ import {
 } from "@fluentui/react-components";
 import { OFFER_SIGN_UP_TITLE } from "../../constants";
 import { LiveAccordion, LiveTextInput } from "../../components/live-browser";
-import { useAppContext } from "../../context";
+import { useLiveBrowserContext } from "../../context";
 
 export const BrowseOfferSignUpPage: FC = () => {
-    const { offerId } = useParams<{ offerId: string }>();
-
-    const { navigate, routePrefix } = useAppContext();
+    const { navigate, routePrefix, offer } = useLiveBrowserContext();
 
     const onClickSubmit = useCallback(() => {
-        navigate(routePrefix + "/offer-thank-you/" + offerId);
-    }, [navigate, routePrefix, offerId]);
+        navigate(routePrefix + "/offer-thank-you");
+    }, [navigate, routePrefix, offer]);
 
     return (
         <FlexRow fill="both" hAlign="center">
@@ -41,7 +38,7 @@ export const BrowseOfferSignUpPage: FC = () => {
                     <FlexColumn gap="small">
                         <Title1>{OFFER_SIGN_UP_TITLE}</Title1>
                         <LiveAccordion
-                            uniqueKey={`offer-sign-up/${offerId}`}
+                            uniqueKey={`offer-sign-up/${offer.id}`}
                             initialOpenItem="Basic information"
                         >
                             <AccordionItem value={"Basic information"}>
@@ -55,29 +52,29 @@ export const BrowseOfferSignUpPage: FC = () => {
                                 >
                                     <FlexColumn gap="smaller">
                                         <LiveTextInput
-                                            uniqueKey={`offerId/${offerId}/first-name`}
+                                            uniqueKey={`sign-up/first-name`}
                                             label="First name"
                                             placeholder="Enter a first name"
                                         />
                                         <LiveTextInput
-                                            uniqueKey={`offerId/${offerId}/last-name`}
+                                            uniqueKey={`sign-up/last-name`}
                                             label="Last name"
                                             placeholder="Enter a last name"
                                         />
                                         <LiveTextInput
-                                            uniqueKey={`offerId/${offerId}/email`}
+                                            uniqueKey={`sign-up/email`}
                                             label="Email"
                                             placeholder="Enter an email"
                                             type="email"
                                         />
                                         <LiveTextInput
-                                            uniqueKey={`offerId/${offerId}/phone`}
+                                            uniqueKey={`sign-up/phone`}
                                             label="Phone number"
                                             placeholder="Enter an phone number"
                                             type="tel"
                                         />
                                         <TextInput
-                                            id={`offerId/${offerId}/password`}
+                                            id={`sign-up/password`}
                                             label="Password (only you will see this)"
                                             placeholder="Enter an password"
                                             type="password"
@@ -96,13 +93,13 @@ export const BrowseOfferSignUpPage: FC = () => {
                                 >
                                     <FlexColumn gap="smaller">
                                         <LiveTextInput
-                                            uniqueKey={`offerId/${offerId}/salary`}
+                                            uniqueKey={`sign-up/salary`}
                                             label="Annual salary"
                                             placeholder="Enter your annual salary"
                                             type="number"
                                         />
                                         <TextInput
-                                            id={`offerId/${offerId}/ssn`}
+                                            id={`sign-up/ssn`}
                                             label="Social security number (only you will see this)"
                                             placeholder="Enter your SSN"
                                         />

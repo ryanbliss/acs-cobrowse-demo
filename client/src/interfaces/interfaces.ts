@@ -14,8 +14,9 @@ export interface IStep {
 
 export interface IOffer {
     id: string;
-    type: "CHECKING" | "SAVINGS";
+    type: "CHECKING" | "SAVINGS" | "CREDIT CARD";
     amount: number;
     steps: IStep[];
     expiresFormattedDate: string;
+    videoUrl: string;
 }

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { FlexRow } from "../../common";
 import { Button, tokens } from "@fluentui/react-components";
-import { useAppContext } from "../../../context";
+import { useLiveBrowserContext } from "../../../context";
 import { LiveAvatars } from "./LiveAvatars";
 import { LiveRoutePrefix } from "../../../constants";
 
@@ -12,7 +12,7 @@ interface ILiveNavigationBarProps {
 export const LiveNavigationBar: FC<ILiveNavigationBarProps> = ({
     routePrefix,
 }) => {
-    const { navigate } = useAppContext();
+    const { navigate } = useLiveBrowserContext();
     return (
         <FlexRow
             vAlign="center"
@@ -31,14 +31,6 @@ export const LiveNavigationBar: FC<ILiveNavigationBarProps> = ({
                     }}
                 >
                     {"CONTOSO BANK"}
-                </Button>
-                <Button
-                    appearance="subtle"
-                    onClick={() => {
-                        navigate(routePrefix + "/about");
-                    }}
-                >
-                    {"About"}
                 </Button>
             </FlexRow>
             <LiveAvatars />

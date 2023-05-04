@@ -10,20 +10,16 @@ import {
 } from "../../constants";
 import { LiveVideo } from "../../components/live-browser";
 import { HeroOffer } from "../../components/content/HeroOffer";
-import { useAppContext } from "../../context";
+import { useLiveBrowserContext } from "../../context";
 import { ContentBlockWrapper } from "../../components/content/ContentBlockWrapper";
-import { OFFERS } from "../../constants/Offers";
-import VIDEO_PATH from "../../assets/contoso-bank-checking-625.mp4";
-const VIDEO_URL = window.location.origin + VIDEO_PATH;
-
-const DEFAULT_OFFER = OFFERS[0];
 
 export const BrowseHomePage: FC = () => {
-    const { navigate, routePrefix } = useAppContext();
+    const { navigate, routePrefix, offer } = useLiveBrowserContext();
+    
 
     const onClickCTA = useCallback(() => {
-        navigate(routePrefix + "/offer-sign-up/" + DEFAULT_OFFER.id);
-    }, [navigate, routePrefix]);
+        navigate(routePrefix + "/offer-sign-up");
+    }, [navigate, routePrefix, offer]);
 
     return (
         <FlexRow fill="both" hAlign="center">
@@ -36,7 +32,7 @@ export const BrowseHomePage: FC = () => {
                 }}
             >
                 <HeroOffer
-                    offer={DEFAULT_OFFER}
+                    offer={offer}
                     copyTitle={HOME_PAGE_OFFER_COPY_TITLE}
                     copyBody={HOME_PAGE_OFFER_COPY_BODY}
                     ctaText={"Sign up"}
@@ -53,10 +49,10 @@ export const BrowseHomePage: FC = () => {
                         backgroundColor: tokens.colorNeutralBackground4,
                     }}
                 >
-                    <LiveVideo videoUrl={VIDEO_URL} />
+                    <LiveVideo videoUrl={offer.videoUrl} />
                 </FlexColumn>
                 <OfferStepsBlock
-                    offer={DEFAULT_OFFER}
+                    offer={offer}
                     title={HOME_PAGE_OFFER_STEPS_TITLE}
                 />
                 <ContentBlockWrapper style={{

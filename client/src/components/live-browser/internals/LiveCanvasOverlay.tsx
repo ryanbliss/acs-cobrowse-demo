@@ -2,7 +2,7 @@ import { useLiveCanvas } from "@microsoft/live-share-react";
 import { PointerInputProvider } from "@microsoft/live-share-canvas";
 import { FC, useRef, useEffect, MutableRefObject, useState } from "react";
 import { NonClickablePointerInputProvider } from "../../../utils";
-import { useAppContext } from "../../../context";
+import { useLiveBrowserContext } from "../../../context";
 import { LiveSessionFloatingControls } from "./LiveSessionFloatingControls";
 
 interface ILiveCanvasOverlayProps {
@@ -10,7 +10,7 @@ interface ILiveCanvasOverlayProps {
 }
 
 export const LiveCanvasOverlay: FC<ILiveCanvasOverlayProps> = ({ pointerElementRef }) => {
-    const { commonWidth, commonHeight } = useAppContext();
+    const { commonWidth, commonHeight } = useLiveBrowserContext();
     const canvasRef = useRef<HTMLDivElement>(null);
     const [inkingActive, setInkingActive] = useState(false);
     const { inkingManager } = useLiveCanvas(

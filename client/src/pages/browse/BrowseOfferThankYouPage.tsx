@@ -1,12 +1,9 @@
 import { FC } from "react";
-import { useParams } from "react-router-dom";
 import { ContentBlockWrapper, FlexColumn, FlexRow } from "../../components";
 import { LiveScrollView } from "../../components/live-browser/internals";
 import { Subtitle2, Title1 } from "@fluentui/react-components";
 
 export const BrowseOfferThankYouPage: FC = () => {
-    const { offerId } = useParams<{ offerId: string }>();
-
     return (
         <FlexRow fill="both" hAlign="center">
             <LiveScrollView

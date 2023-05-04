@@ -18,8 +18,8 @@ export const AppRoutes = {
                 children: {
                     home: LiveRoutePrefix.TEAMS + "/",
                     about: LiveRoutePrefix.TEAMS + "/about",
-                    offerSignUp: LiveRoutePrefix.TEAMS + "/offer-sign-up/:offerId",
-                    offerThankYou: LiveRoutePrefix.TEAMS + "/offer-thank-you/:offerId",
+                    offerSignUp: LiveRoutePrefix.TEAMS + "/offer-sign-up",
+                    offerThankYou: LiveRoutePrefix.TEAMS + "/offer-thank-you",
                 },
             },
             sidePanel: TEAMS_BASE_ROUTE + "/side-panel",
@@ -34,8 +34,8 @@ export const AppRoutes = {
                 children: {
                     home: LiveRoutePrefix.ACS + "/",
                     about: LiveRoutePrefix.ACS + "/about",
-                    offerSignUp: LiveRoutePrefix.ACS + "/offer-sign-up/:offerId",
-                    offerThankYou: LiveRoutePrefix.ACS + "/offer-thank-you/:offerId",
+                    offerSignUp: LiveRoutePrefix.ACS + "/offer-sign-up",
+                    offerThankYou: LiveRoutePrefix.ACS + "/offer-thank-you",
                 },
             },
         },

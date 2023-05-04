@@ -20,15 +20,15 @@ export const LiveVideo: FC<ILiveVideoProps> = memo(({ videoUrl }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [playing, setPlaying] = useState(false);
     const [muted, setMuted] = useState(false);
-    const { play, pause, mediaSynchronizer } = useMediaSynchronizer(
+    const { play, pause, setTrack, mediaSynchronizer } = useMediaSynchronizer(
         "MEDIA-SESSION-ID",
         videoRef,
         videoUrl,
         ALLOWED_ROLES
     );
 
+    // Listen for player group actions for errors (e.g., play error)
     useEffect(() => {
-        // Listen for player group actions for errors (e.g., play error)
         const onGroupAction = (evt: IMediaPlayerSynchronizerEvent) => {
             if (evt.error) {
                 if (
@@ -78,6 +78,12 @@ export const LiveVideo: FC<ILiveVideoProps> = memo(({ videoUrl }) => {
             videoRef.current?.removeEventListener("pause", onPauseListener);
         };
     }, []);
+
+    // Effect to change the track when the URL changes
+    useEffect(() => {
+        if (!mediaSynchronizer || !mediaSynchronizer.mediaSession.isInitialized) return;
+        setTrack(videoUrl);
+    }, [setTrack, videoUrl, mediaSynchronizer]);
 
     const onTogglePlayPause = useCallback(() => {
         if (videoRef.current?.paused) {

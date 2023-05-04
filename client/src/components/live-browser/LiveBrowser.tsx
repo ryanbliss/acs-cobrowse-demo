@@ -4,6 +4,7 @@ import { Spinner, tokens } from "@fluentui/react-components";
 import {
     useFluidObjectsContext,
     useLivePresence,
+    useLiveState,
 } from "@microsoft/live-share-react";
 import { Outlet } from "react-router-dom";
 import {
@@ -12,10 +13,18 @@ import {
     useLiveNavigate,
 } from "./internals";
 import debounce from "lodash.debounce";
-import { AppContextProvider } from "../../context";
+import { LiveBrowserContextProvider } from "../../context";
 import { useCommonScreenSize } from "../../hooks";
-import { IUserData } from "../../interfaces";
+import { IOffer, IUserData } from "../../interfaces";
 import { LiveRoutePrefix } from "../../constants";
+import { OFFERS } from "../../constants/Offers";
+import { UserMeetingRole } from "@microsoft/live-share";
+
+const DEFAULT_OFFER = OFFERS[0];
+const LIVE_OFFER_KEY = "live_offer_key";
+const ALLOWED_ROLES_LIVE_OFFER = [
+    UserMeetingRole.organizer,
+];
 
 interface ILiveBrowserProps {
     displayName: string;
@@ -29,6 +38,8 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate(routePrefix);
+
+    const [offer, setOffer] = useLiveState<IOffer>(LIVE_OFFER_KEY, DEFAULT_OFFER, ALLOWED_ROLES_LIVE_OFFER);
 
     const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>(
         {
@@ -66,13 +77,15 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
     }
     // Otherwise, we render the LiveBrowser contents
     return (
-        <AppContextProvider
+        <LiveBrowserContextProvider
             navigate={navigate}
             commonWidth={commonWidth}
             commonHeight={commonHeight}
             allUsers={allUsers}
             localUser={localUser}
             routePrefix={routePrefix}
+            offer={offer}
+            onSetOffer={setOffer}
         >
             <FlexColumn
                 style={{
@@ -88,6 +101,6 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
                 <LiveNavigationBar routePrefix={routePrefix} />
                 <Outlet />
             </FlexColumn>
-        </AppContextProvider>
+        </LiveBrowserContextProvider>
     );
 };
