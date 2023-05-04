@@ -39,12 +39,12 @@ export const HeroOffer: FC<IHeroOfferProps> = ({
         <ContentBlockWrapper>
             <FlexRow gap="large">
                 <FlexItem noShrink>
-                    <FlexColumn gap="smaller">
+                    <FlexColumn>
                         <Subtitle2Stronger>{"Earn a"}</Subtitle2Stronger>
                         <Title1
                             style={{
                                 fontSize: "80px",
-                                lineHeight: "100px",
+                                lineHeight: "90px",
                                 color: tokens.colorBrandForeground1,
                                 fontWeight: 800,
                             }}
