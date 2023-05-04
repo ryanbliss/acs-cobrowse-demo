@@ -1,6 +1,6 @@
 import { FC, useCallback } from "react";
 import { FlexColumn } from "../flex";
-import { Input, InputProps, Label, useId} from "@fluentui/react-components";
+import { Input, InputProps, Label, useId } from "@fluentui/react-components";
 
 interface ITextInputProps extends Partial<InputProps> {
     id: string;
@@ -9,11 +9,21 @@ interface ITextInputProps extends Partial<InputProps> {
     setValue?: (newValue: string) => void;
 }
 
-export const TextInput: FC<ITextInputProps> = ({ id, label, placeholder, value, setValue }) => {
+export const TextInput: FC<ITextInputProps> = ({
+    id,
+    label,
+    placeholder,
+    value,
+    setValue,
+    ...props
+}) => {
     const idVal = useId(id);
-    const onChange: InputProps["onChange"] = useCallback((_, data) => {
-        setValue?.(data.value);
-    }, [setValue]);
+    const onChange: InputProps["onChange"] = useCallback(
+        (_, data) => {
+            setValue?.(data.value);
+        },
+        [setValue]
+    );
     return (
         <FlexColumn>
             <Label htmlFor={idVal}>{label}</Label>
@@ -22,7 +32,8 @@ export const TextInput: FC<ITextInputProps> = ({ id, label, placeholder, value, 
                 placeholder={placeholder}
                 value={value}
                 onChange={!!setValue ? onChange : undefined}
+                {...props}
             />
         </FlexColumn>
-    )
-}
+    );
+};
