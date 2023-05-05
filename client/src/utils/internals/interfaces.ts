@@ -1,4 +1,4 @@
-import { IFluidTenantInfo } from "@microsoft/live-share";
+import { IFluidTenantInfo, UserMeetingRole } from "@microsoft/live-share";
 
 /**
  * @hidden
@@ -75,6 +75,13 @@ export interface IFluidTenantInfoResponse {
     broadcaster: {
         frsTenantInfo: IFluidTenantInfo;
     },
+}
+
+/**
+ * @hidden
+ */
+export interface IUserRolesResponse {
+    userRoles: UserMeetingRole[];
 }
 
 /**

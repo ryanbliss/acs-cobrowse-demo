@@ -27,8 +27,8 @@ import {
     isIGetClientInfoResponse,
 } from "./internals";
 
-const LiveShareRoutePrefix = "/livesync/v1/acs";
 const LiveShareBaseUrl = "https://teams.microsoft.com/api/platform";
+const LiveShareRoutePrefix = "livesync/v1/acs";
 const GetNtpTimeRoute = "getNTPTime";
 const GetFluidTenantInfoRoute = "fluid/tenantInfo/get";
 const RegisterClientRolesRoute = "clientRoles/register";
@@ -231,9 +231,14 @@ export class ACSLiveShareHost implements ILiveShareHost {
      * Returns the global timestamp for the current session.
      */
     public async getNtpTime(): Promise<INtpTimeInfo> {
+        const token = await this.options.acsTokenProvider();
         const response = await fetch(
             `${LiveShareBaseUrl}/${LiveShareRoutePrefix}/${GetNtpTimeRoute}`,
             {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `SkypeToken ${token}`,
+                },
                 method: "GET",
             }
         );
@@ -273,10 +278,10 @@ export class ACSLiveShareHost implements ILiveShareHost {
             }
         );
         const data: unknown = await response.json();
-        if (!isUserMeetingRoleList(data)) {
+        if (!isUserMeetingRolesRespnose(data)) {
             throw new Error("ACSLiveShareHost.registerClientId: invalid response from server");
         }
-        return data;
+        return data.userRoles;
     }
 
     /**

@@ -4,7 +4,7 @@ import { TestLiveShareHost, ILiveShareHost } from "@microsoft/live-share";
 import { MutableRefObject, useEffect, useState } from "react";
 import { ACSLiveShareHost } from "../utils";
 
-const USE_ACS_HOST = false;
+const USE_ACS_HOST = true;
 
 export const useACSLiveShareHost = (
     acsResults: { adapter: CallAdapter; callAgent: CallAgent } | undefined,
@@ -37,7 +37,7 @@ export const useACSLiveShareHost = (
         setHost(
             USE_ACS_HOST
                 ? ACSLiveShareHost.create({
-                      userId: userId.communicationUserId,
+                      userId: userId.communicationUserId.split("_")[1],
                       displayName,
                       call,
                       teamsMeetingJoinUrl: meetingJoinUrl,
