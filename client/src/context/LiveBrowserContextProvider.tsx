@@ -11,7 +11,6 @@ interface ILiveBrowserProviderProps {
     navigate: (route: string) => void;
     routePrefix: LiveRoutePrefix;
     offer: IOffer;
-    onSetOffer: (offer: IOffer) => void;
 }
 
 export const LiveBrowserContextProvider: FC<ILiveBrowserProviderProps> = ({
@@ -23,7 +22,6 @@ export const LiveBrowserContextProvider: FC<ILiveBrowserProviderProps> = ({
     navigate,
     routePrefix,
     offer,
-    onSetOffer,
 }) => {
     return (
         <LiveBrowserContext.Provider
@@ -35,7 +33,6 @@ export const LiveBrowserContextProvider: FC<ILiveBrowserProviderProps> = ({
                 localUser,
                 routePrefix,
                 offer,
-                onSetOffer,
             }}
         >
             {children}
@@ -51,7 +48,6 @@ interface ILiveBrowserContext {
     localUser: PresenceUser | undefined;
     routePrefix: LiveRoutePrefix;
     offer: IOffer;
-    onSetOffer: (offer: IOffer) => void;
 }
 
 const LiveBrowserContext = createContext<ILiveBrowserContext>(

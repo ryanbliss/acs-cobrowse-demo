@@ -8,28 +8,26 @@ import {
 } from "@azure/communication-react";
 import { useEffect, useRef, useState } from "react";
 
+export interface IUseACSCallResults {
+    adapter: CallAdapter;
+    callAgent: CallAgent;
+    callClient: StatefulCallClient;
+};
+
 // Example of hook that returns both a CallAdapter and StatefulCallClient
 export const useACSCall = (
     args: Partial<AzureCommunicationCallAdapterArgs>,
     afterCreate?: (adapter: CallAdapter) => Promise<CallAdapter>,
     beforeDispose?: (adapter: CallAdapter) => Promise<void>
 ):
-    | {
-          adapter: CallAdapter;
-          callAgent: CallAgent;
-          callClient: StatefulCallClient;
-      }
+    | IUseACSCallResults
     | undefined => {
     const { credential, locator, userId } = args;
     const displayName = "displayName" in args ? args.displayName : undefined;
     const options = "options" in args ? args.options : undefined;
 
     // State update needed to rerender the parent component when a new adapter is created.
-    const [results, setResults] = useState<{
-        adapter: CallAdapter,
-        callAgent: CallAgent,
-        callClient: StatefulCallClient,
-    } | undefined>(undefined);
+    const [results, setResults] = useState<IUseACSCallResults | undefined>(undefined);
     // Ref needed for cleanup to access the old adapter created asynchronously.
     const adapterRef = useRef<CallAdapter | undefined>(undefined);
 

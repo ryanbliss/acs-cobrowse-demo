@@ -1,13 +1,6 @@
-import {
-    FC,
-    useCallback,
-    useRef,
-    useMemo,
-    memo,
-    useState,
-} from "react";
+import { FC, useCallback, useRef, useMemo, memo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FlexColumn, LiveShareWrapper } from "../../components";
+import { FlexColumn } from "../../components";
 import { LiveBrowser } from "../../components/live-browser";
 import { AppRoutes } from "../../constants";
 import { createAutoRefreshingCredential } from "../../utils";
@@ -19,14 +12,23 @@ import {
 import { Spinner } from "@fluentui/react-components";
 import { ACSCall } from "../../components/acs-call/ACSCall";
 import { CallState } from "@azure/communication-calling";
-import { useACSCall, useACSLiveShareHost } from "../../hooks";
+import {
+    IUseACSCallResults,
+    useACSCall,
+    useACSLiveShareHost,
+    useLiveOffer,
+} from "../../hooks";
+import { LiveShareProvider, useLiveState } from "@microsoft/live-share-react";
+import { IOffer } from "../../interfaces";
+import { OFFERS } from "../../constants/Offers";
+import { UserMeetingRole } from "@microsoft/live-share";
 
 export const ACSMeetingPage: FC = memo(() => {
     const { state } = useLocation();
     const [callState, setCallState] = useState<CallState>("None");
     const initialStateRef = useRef(state);
     const callIdRef = useRef<string>();
-    
+
     // We do this here because the route may change later, and we don't want this state to be lost
     const user =
         typeof initialStateRef.current?.user === "object"
@@ -75,7 +77,10 @@ export const ACSMeetingPage: FC = memo(() => {
                     callIdRef.current = state?.call?.id;
                     console.log(`Call Id: ${callIdRef.current}`);
                 }
-                if (state?.call?.state && state.call.state !== currentCallState) {
+                if (
+                    state?.call?.state &&
+                    state.call.state !== currentCallState
+                ) {
                     currentCallState = state.call.state;
                     setCallState(currentCallState);
                 }
@@ -98,7 +103,7 @@ export const ACSMeetingPage: FC = memo(() => {
         },
         afterCreate
     );
-    
+
     // Stateful hook for the ILiveShareHost, which is set after connecting to a call
     const host = useACSLiveShareHost(
         acsResults,
@@ -106,17 +111,20 @@ export const ACSMeetingPage: FC = memo(() => {
         callIdRef,
         meetingJoinUrl,
         token,
-        displayName,
+        displayName
     );
 
-    if (!acsResults?.adapter || !initialStateRef.current?.user?.communicationUserId) {
+    if (
+        !acsResults?.adapter ||
+        !initialStateRef.current?.user?.communicationUserId
+    ) {
         return (
             <FlexColumn fill="both" vAlign="center" hAlign="center">
                 <Spinner />
             </FlexColumn>
         );
     }
-    if (callState !== 'Connected') {
+    if (callState !== "Connected") {
         return (
             <FlexColumn fill="both">
                 <ACSCall adapter={acsResults.adapter} />
@@ -131,12 +139,39 @@ export const ACSMeetingPage: FC = memo(() => {
         );
     }
     return (
-        <LiveShareWrapper host={host}>
-            <LiveBrowser displayName={displayName} routePrefix={AppRoutes.acs.children.meeting.base} />
+        <LiveShareProvider host={host} joinOnLoad>
+            <ACSMeetingCallRenderer acsResults={acsResults} />
+        </LiveShareProvider>
+    );
+});
+
+interface IACSMeetingCallRendererProps {
+    acsResults: IUseACSCallResults;
+}
+
+const ACSMeetingCallRenderer: FC<IACSMeetingCallRendererProps> = ({
+    acsResults,
+}) => {
+    const [offer] = useLiveOffer();
+
+    if (!offer) {
+        return (
+            <FlexColumn fill="both">
+                <ACSCall adapter={acsResults.adapter} />
+            </FlexColumn>
+        );
+    }
+
+    return (
+        <>
+            <LiveBrowser
+                routePrefix={AppRoutes.acs.children.meeting.base}
+                offer={offer}
+            />
             <FlexColumn
                 style={{
-                    width: "280px",
-                    height: "256px",
+                    width: "272px",
+                    height: "300px",
                     position: "fixed",
                     right: "8px",
                     bottom: "8px",
@@ -145,9 +180,9 @@ export const ACSMeetingPage: FC = memo(() => {
             >
                 <ACSCall adapter={acsResults.adapter} formFactor="mobile" />
             </FlexColumn>
-        </LiveShareWrapper>
+        </>
     );
-});
+};
 
 const convertPageStateToString = (state: CallAdapterState): string => {
     switch (state.page) {

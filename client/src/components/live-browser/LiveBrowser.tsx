@@ -4,7 +4,6 @@ import { Spinner, tokens } from "@fluentui/react-components";
 import {
     useFluidObjectsContext,
     useLivePresence,
-    useLiveState,
 } from "@microsoft/live-share-react";
 import { Outlet } from "react-router-dom";
 import {
@@ -17,36 +16,21 @@ import { LiveBrowserContextProvider } from "../../context";
 import { useCommonScreenSize } from "../../hooks";
 import { IOffer, IUserData } from "../../interfaces";
 import { LiveRoutePrefix } from "../../constants";
-import { OFFERS } from "../../constants/Offers";
-import { UserMeetingRole } from "@microsoft/live-share";
-
-const DEFAULT_OFFER = OFFERS[0];
-const LIVE_OFFER_KEY = "live_offer_key";
-const ALLOWED_ROLES_LIVE_OFFER = [
-    UserMeetingRole.organizer,
-];
 
 interface ILiveBrowserProps {
-    displayName: string;
     routePrefix: LiveRoutePrefix;
+    offer: IOffer;
 }
 
-export const LiveBrowser: FC<ILiveBrowserProps> = ({
-    displayName,
-    routePrefix,
-}) => {
+export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix, offer }) => {
     const browserContainerRef = useRef<HTMLDivElement | null>(null);
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate(routePrefix);
 
-    const [offer, setOffer] = useLiveState<IOffer>(LIVE_OFFER_KEY, DEFAULT_OFFER, ALLOWED_ROLES_LIVE_OFFER);
-
-    const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>(
-        {
-            screenWidth: window.document.body.clientWidth,
-            screenHeight: window.document.body.clientHeight,
-        }
-    );
+    const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>({
+        screenWidth: window.document.body.clientWidth,
+        screenHeight: window.document.body.clientHeight,
+    });
     // Calculates the lowest common denominator for screen widths & heights for all users in session.
     // This helps us ensure that cursors, strokes, and scroll views are positioned correctly for all users.
     const { commonWidth, commonHeight } = useCommonScreenSize(allUsers);
@@ -65,7 +49,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
             window.removeEventListener("resize", onResize, true);
             onResize.cancel();
         };
-    }, [displayName, updatePresence]);
+    }, [updatePresence]);
 
     // If we have not yet joined the session container, we show a loading spinner
     if (!container) {
@@ -85,7 +69,6 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
             localUser={localUser}
             routePrefix={routePrefix}
             offer={offer}
-            onSetOffer={setOffer}
         >
             <FlexColumn
                 style={{
@@ -95,9 +78,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({
                 }}
                 ref={browserContainerRef}
             >
-                <LiveCanvasOverlay
-                    pointerElementRef={browserContainerRef}
-                />
+                <LiveCanvasOverlay pointerElementRef={browserContainerRef} />
                 <LiveNavigationBar routePrefix={routePrefix} />
                 <Outlet />
             </FlexColumn>

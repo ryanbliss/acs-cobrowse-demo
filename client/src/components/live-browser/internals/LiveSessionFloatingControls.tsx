@@ -1,13 +1,10 @@
-import { FC, useCallback } from "react";
+import { FC } from "react";
 import { FlexRow } from "../../common/flex";
 import { tokens } from "@fluentui/react-theme";
 import { InkingControls } from "./InkingControls";
 import { Button } from "@fluentui/react-components";
 import { InkingManager } from "@microsoft/live-share-canvas";
 import { useLiveBrowserContext } from "../../../context";
-import { DropdownInput } from "../../common";
-import { OFFERS } from "../../../constants/Offers";
-import { UserMeetingRole } from "@microsoft/live-share";
 
 interface ILiveSessionFloatingControlsProps {
     inkingManager?: InkingManager;
@@ -15,21 +12,10 @@ interface ILiveSessionFloatingControlsProps {
     setInkingActive: (enabled: boolean) => void;
 }
 
-const OPTIONS = OFFERS.map((offer) => ({
-    id: offer.id,
-    displayText: offer.id,
-}));
-
 export const LiveSessionFloatingControls: FC<
     ILiveSessionFloatingControlsProps
 > = ({ inkingManager, inkingActive, setInkingActive }) => {
-    const { commonWidth, offer, onSetOffer, localUser } = useLiveBrowserContext();
-
-    const onDidSelectOffer = useCallback((id: string) => {
-        const newOffer = OFFERS.find((checkOffer) => checkOffer.id === id);
-        if (!newOffer) return;
-        onSetOffer(newOffer)
-    }, [onSetOffer]);
+    const { commonWidth } = useLiveBrowserContext();
 
     return (
         <FlexRow
@@ -58,17 +44,6 @@ export const LiveSessionFloatingControls: FC<
                     pointerEvents: "auto",
                 }}
             >
-                {localUser?.roles.includes(UserMeetingRole.organizer) && (
-                    <DropdownInput
-                        id="selected-offer"
-                        options={OPTIONS}
-                        value={offer.id}
-                        onDidSelect={onDidSelectOffer}
-                        style={{
-                            maxWidth: "100px"
-                        }}
-                    />
-                )}
                 {inkingManager && (
                     <InkingControls
                         inkingManager={inkingManager}
