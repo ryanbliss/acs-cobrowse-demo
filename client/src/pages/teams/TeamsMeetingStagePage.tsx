@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { AppRoutes, IN_TEAMS } from "../../constants";
 import { TestLiveShareHost, ILiveShareHost } from "@microsoft/live-share";
 import { LiveShareHost } from "@microsoft/teams-js";
@@ -8,10 +8,10 @@ import { useLiveOffer } from "../../hooks";
 import { FlexColumn } from "../../components";
 import { LiveOfferPicker } from "../../components/live-browser/LiveOfferPicker";
 
-const host: ILiveShareHost = IN_TEAMS
-    ? LiveShareHost.create()
-    : TestLiveShareHost.create();
 export const TeamsMeetingStagePage: FC = () => {
+    const [host] = useState<ILiveShareHost>(
+        IN_TEAMS ? LiveShareHost.create() : TestLiveShareHost.create()
+    );
     return (
         <LiveShareProvider host={host} joinOnLoad>
             <TeamsMeetingStageRenderer />

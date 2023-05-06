@@ -24,6 +24,14 @@
         "color": "color.png"
     },
     "accentColor": "#FFFFFF",
+    "configurableTabs": [
+        {
+            "configurationUrl": "https://ryanbliss.ngrok.io/teams/config?fluidEnv=teams",
+            "canUpdateConfiguration": false,
+            "scopes": ["groupchat", "team"],
+            "context": ["meetingSidePanel", "meetingStage"]
+        }
+    ],
     "staticTabs": [
         {
             "entityId": "homeTab",

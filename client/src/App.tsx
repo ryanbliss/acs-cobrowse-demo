@@ -79,6 +79,8 @@ function App() {
         initialize();
     }, []);
 
+    console.log(IN_TEAMS);
+
     const appReady = (IN_TEAMS && initialized) || !IN_TEAMS;
     if (!appReady) return null;
 
