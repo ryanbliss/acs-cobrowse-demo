@@ -60,7 +60,7 @@ export function isINtpTimeInfo(value: any): value is INtpTimeInfo {
 /**
  * @hidden
  */
-export function isUserMeetingRolesRespnose(value: any): value is IUserRolesResponse {
+export function isUserMeetingRolesResponse(value: any): value is IUserRolesResponse {
     
     const meetingRoleValues = Object.values(UserMeetingRole);
     return !!value && !!value.userRoles && Array.isArray(value.userRoles) && value.userRoles.every((value: any) => meetingRoleValues.includes(value));

