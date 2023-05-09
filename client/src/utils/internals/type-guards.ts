@@ -4,7 +4,7 @@
  */
 
 import { IFluidContainerInfo, INtpTimeInfo, UserMeetingRole } from "@microsoft/live-share";
-import { IFluidTenantInfoResponse, IFluidTokenResponse, IGetClientInfoResponse } from "./interfaces";
+import { IFluidTenantInfoResponse, IFluidTokenResponse, IGetClientInfoResponse, IUserRolesResponse } from "./interfaces";
 
 /**
  * @hidden
@@ -60,9 +60,10 @@ export function isINtpTimeInfo(value: any): value is INtpTimeInfo {
 /**
  * @hidden
  */
-export function isUserMeetingRoleList(value: any): value is UserMeetingRole[] {
+export function isUserMeetingRolesResponse(value: any): value is IUserRolesResponse {
+    
     const meetingRoleValues = Object.values(UserMeetingRole);
-    return Array.isArray(value) && value.every((value) => meetingRoleValues.includes(value));
+    return !!value && !!value.userRoles && Array.isArray(value.userRoles) && value.userRoles.every((value: any) => meetingRoleValues.includes(value));
 }
 
 /**
