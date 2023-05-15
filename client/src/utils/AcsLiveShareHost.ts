@@ -28,14 +28,13 @@ import {
 } from "./internals";
 
 const LiveShareRoutePrefix = "livesync/v1/acs";
-const LiveShareBaseUrl = "https://proxyhttps40000.vromanchpayments.net";
+const LiveShareBaseUrl = "https://dev.teamsgraph.teams.microsoft.net/";
 const GetNtpTimeRoute = "getNTPTime";
 const GetFluidTenantInfoRoute = "fluid/tenantInfo/get";
 const RegisterClientRolesRoute = "clientRoles/register";
 const FluidTokenGetRoute = "fluid/token/get";
 const FluidContainerGetRoute = "fluid/container/get";
 const FluidContainerSetRoute = "fluid/container/set";
-// const ClientRolesGetRoute = 'clientRoles/get';
 const ClientInfoGetRoute = "user/get";
 
 interface IClientInfo {
