@@ -23,7 +23,6 @@ import {
     isIFluidTokenResponse,
     isIFluidContainerInfo,
     isINtpTimeInfo,
-    isUserMeetingRoleList,
     isIGetClientInfoResponse,
     isUserMeetingRolesResponse,
 } from "./internals";
