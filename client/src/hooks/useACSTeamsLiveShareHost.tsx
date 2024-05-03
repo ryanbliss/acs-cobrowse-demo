@@ -1,12 +1,12 @@
 import { CallAgent, CallState } from "@azure/communication-calling";
 import { CallAdapter } from "@azure/communication-react";
 import { TestLiveShareHost, ILiveShareHost } from "@microsoft/live-share";
+import { ACSTeamsLiveShareHost } from "@microsoft/live-share-acs";
 import { MutableRefObject, useEffect, useState } from "react";
-import { ACSLiveShareHost } from "../utils";
 
 const USE_ACS_HOST = true;
 
-export const useACSLiveShareHost = (
+export const useACSTeamsLiveShareHost = (
     acsResults: { adapter: CallAdapter; callAgent: CallAgent } | undefined,
     callState: CallState,
     callIdRef: MutableRefObject<string | undefined>,
@@ -36,7 +36,7 @@ export const useACSLiveShareHost = (
         console.log("ACSMeetingPage: setting host with callId", call.id);
         setHost(
             USE_ACS_HOST
-                ? ACSLiveShareHost.create({
+                ? ACSTeamsLiveShareHost.create({
                       userId: userId.communicationUserId.split("_")[1],
                       displayName,
                       call,

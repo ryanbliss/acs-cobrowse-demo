@@ -27,7 +27,7 @@ export const LiveBrowser: FC<ILiveBrowserProps> = ({ routePrefix, offer }) => {
     const { container } = useFluidObjectsContext();
     const navigate = useLiveNavigate(routePrefix);
 
-    const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>({
+    const { allUsers, localUser, updatePresence } = useLivePresence<IUserData>("PRESENCE", {
         screenWidth: window.document.body.clientWidth,
         screenHeight: window.document.body.clientHeight,
     });

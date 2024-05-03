@@ -15,7 +15,7 @@ import { CallState } from "@azure/communication-calling";
 import {
     IUseACSCallResults,
     useACSCall,
-    useACSLiveShareHost,
+    useACSTeamsLiveShareHost,
     useLiveOffer,
 } from "../../hooks";
 import { LiveShareProvider, useLiveState } from "@microsoft/live-share-react";
@@ -105,7 +105,7 @@ export const ACSMeetingPage: FC = memo(() => {
     );
 
     // Stateful hook for the ILiveShareHost, which is set after connecting to a call
-    const host = useACSLiveShareHost(
+    const host = useACSTeamsLiveShareHost(
         acsResults,
         callState,
         callIdRef,

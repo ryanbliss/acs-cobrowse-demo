@@ -14,7 +14,7 @@ export const TeamsConfigPage: FC = () => {
         pages.config.registerOnSaveHandler(function (saveEvent) {
             pages.config.setConfig({
                 suggestedDisplayName: "CoBrowse",
-                contentUrl: `${window.location.origin}${AppRoutes.teams.children.sidePanel}?inTeams=true`,
+                contentUrl: `${window.location.origin}${AppRoutes.teams.children.sidePanel}?fluidEnv=teams`,
             });
             saveEvent.notifySuccess();
         });

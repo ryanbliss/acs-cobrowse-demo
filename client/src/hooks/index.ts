@@ -1,5 +1,5 @@
 export * from "./useACSCall";
-export * from "./useACSLiveShareHost";
+export * from "./useACSTeamsLiveShareHost";
 export * from "./useStateToRef";
 export * from "./useCommonScreenSize";
 export * from "./useLiveOffer";

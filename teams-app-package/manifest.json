@@ -1,71 +1,76 @@
 {
-    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-    "version": "1.0.0",
-    "manifestVersion": "1.16",
-    "id": "5f09338f-24f0-40d1-b4ca-da62ada63400",
-    "packageName": "com.microsoft.contoso.bank",
-    "name": {
-        "short": "Contoso Bank",
-        "full": "Contoso Bank"
-    },
-    "developer": {
-        "name": "Ryan Bliss",
-        "mpnId": "",
-        "websiteUrl": "https://www.example.com",
-        "privacyUrl": "https://www.example.com/PrivacyStatement",
-        "termsOfUseUrl": "https://www.example.com/TermsOfUse"
-    },
-    "description": {
-        "short": "Contoso Bank agent app",
-        "full": "Help customers through Contoso banking website"
-    },
-    "icons": {
-        "outline": "outline.png",
-        "color": "color.png"
-    },
-    "accentColor": "#FFFFFF",
-    "configurableTabs": [
-        {
-            "configurationUrl": "https://ryanbliss.ngrok.io/teams/config?fluidEnv=teams",
-            "canUpdateConfiguration": false,
-            "scopes": ["groupchat", "team"],
-            "context": ["meetingSidePanel", "meetingStage"]
-        }
-    ],
-    "staticTabs": [
-        {
-            "entityId": "homeTab",
-            "scopes": ["team", "groupchat"],
-            "context": [
-                "meetingSidePanel",
-                "meetingStage"
-            ],
-            "name": "Contoso Bank",
-            "contentUrl": "https://ryanbliss.ngrok.io/teams/side-panel?fluidEnv=teams"
-        }
-    ],
-    "validDomains": ["*.ngrok.io"],
-    "authorization": {
-        "permissions": {
-            "orgWide": [],
-            "resourceSpecific": [
-                {
-                    "name": "MeetingStage.Write.Chat",
-                    "type": "Delegated"
-                },
-                {
-                    "name": "ChannelMeetingStage.Write.Group",
-                    "type": "Delegated"
-                },
-                {
-                    "name": "LiveShareSession.ReadWrite.Chat",
-                    "type": "Delegated"
-                },
-                {
-                    "name": "LiveShareSession.ReadWrite.Group",
-                    "type": "Delegated"
-                }
-            ]
-        }
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "version": "1.0.0",
+  "manifestVersion": "1.16",
+  "id": "5f09338f-24f0-40d1-b4ca-da62ada63400",
+  "packageName": "com.microsoft.contoso.bank",
+  "name": {
+    "short": "Contoso Bank",
+    "full": "Contoso Bank"
+  },
+  "developer": {
+    "name": "Ryan Bliss",
+    "mpnId": "",
+    "websiteUrl": "https://www.example.com",
+    "privacyUrl": "https://www.example.com/PrivacyStatement",
+    "termsOfUseUrl": "https://www.example.com/TermsOfUse"
+  },
+  "description": {
+    "short": "Contoso Bank agent app",
+    "full": "Help customers through Contoso banking website"
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#FFFFFF",
+  "configurableTabs": [
+    {
+      "configurationUrl": "https://ryanbliss.ngrok.io/teams/config?fluidEnv=teams",
+      "canUpdateConfiguration": false,
+      "scopes": ["groupchat", "team"],
+      "context": ["meetingSidePanel", "meetingStage"]
     }
+  ],
+  "staticTabs": [
+    {
+      "entityId": "homeTab",
+      "scopes": ["team", "groupchat"],
+      "context": ["meetingSidePanel", "meetingStage"],
+      "name": "Contoso Bank",
+      "contentUrl": "https://ryanbliss.ngrok.io/teams/side-panel?fluidEnv=teams"
+    }
+  ],
+  "validDomains": ["*.ngrok.io"],
+  "authorization": {
+    "permissions": {
+      "orgWide": [],
+      "resourceSpecific": [
+        {
+          "name": "MeetingStage.Write.Chat",
+          "type": "Delegated"
+        },
+        {
+          "name": "ChannelMeetingStage.Write.Group",
+          "type": "Delegated"
+        },
+        {
+          "name": "LiveShareSession.ReadWrite.Chat",
+          "type": "Delegated"
+        },
+        {
+          "name": "LiveShareSession.ReadWrite.Group",
+          "type": "Delegated"
+        },
+        {
+          "name": "OnlineMeeting.ReadBasic.Chat",
+          "type": "Delegated"
+        },
+        {
+          "name": "OnlineMeeting.ReadBasic.Group",
+          "type": "Delegated"
+        }
+      ]
+    }
+  }
 }
